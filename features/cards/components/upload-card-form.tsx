@@ -50,7 +50,7 @@ export function UploadCardForm() {
     formData.append('image', data.image)
 
     const result = await createCardPost(formData)
-    
+
     if (result?.error) {
       setError(result.error)
       setIsLoading(false)
@@ -68,9 +68,9 @@ export function UploadCardForm() {
         {/* Lado Izquierdo: Imagen */}
         <div className="space-y-4">
           <label className="block text-sm font-medium">Foto del Cromo</label>
-          <div 
+          <div
             onClick={() => fileInputRef.current?.click()}
-            className="aspect-[3/4] relative border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden hover:border-zinc-400 transition-colors bg-zinc-50 dark:bg-zinc-950"
+            className="aspect-3/4 relative border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden hover:border-zinc-400 transition-colors bg-zinc-50 dark:bg-zinc-950"
           >
             {preview ? (
               <Image src={preview} alt="Preview" fill className="object-cover" />
@@ -81,10 +81,10 @@ export function UploadCardForm() {
               </div>
             )}
           </div>
-          <input 
-            type="file" 
-            accept="image/*" 
-            className="hidden" 
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
           />
@@ -95,7 +95,7 @@ export function UploadCardForm() {
         <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Nombre del Jugador</label>
-            <input 
+            <input
               {...register('playerName')}
               placeholder="Ej: Lionel Messi"
               className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
@@ -106,7 +106,7 @@ export function UploadCardForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Número</label>
-              <input 
+              <input
                 {...register('cardNumber')}
                 placeholder="Ej: ARG 10"
                 className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
@@ -114,7 +114,7 @@ export function UploadCardForm() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Equipo</label>
-              <input 
+              <input
                 {...register('teamName')}
                 placeholder="Ej: Argentina"
                 className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
@@ -126,7 +126,7 @@ export function UploadCardForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">País</label>
-              <input 
+              <input
                 {...register('country')}
                 placeholder="Ej: México"
                 className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
@@ -135,7 +135,7 @@ export function UploadCardForm() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Ciudad / Zona</label>
-              <input 
+              <input
                 {...register('locationCity')}
                 placeholder="Ej: CDMX"
                 className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
@@ -146,7 +146,7 @@ export function UploadCardForm() {
 
           <div className="space-y-2">
             <label className="text-sm font-medium">¿Qué buscas a cambio?</label>
-            <textarea 
+            <textarea
               {...register('desiredTrade')}
               placeholder="Ej: Cambio por Cristiano Ronaldo o 3 del grupo C"
               rows={3}

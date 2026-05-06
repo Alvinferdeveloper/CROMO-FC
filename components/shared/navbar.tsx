@@ -9,7 +9,7 @@ export async function Navbar() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur upports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between mx-auto px-4">
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/" className="flex items-center space-x-2">
@@ -43,8 +43,10 @@ export async function Navbar() {
                 </Link>
               </Button>
               <div className="flex items-center gap-2 border-l pl-4 ml-2">
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <User className="h-5 w-5" />
+                <Button asChild variant="ghost" size="icon" className="rounded-full">
+                  <Link href="/profile">
+                    <User className="h-5 w-5" />
+                  </Link>
                 </Button>
                 <form action={logout}>
                   <Button variant="ghost" size="icon" type="submit" title="Cerrar sesión">
