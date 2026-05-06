@@ -26,11 +26,19 @@ export default async function Home() {
                   <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Conectado como:</p>
                   <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{user.email}</p>
                 </div>
-                <form action={logout}>
-                  <button className="w-full h-12 rounded-full bg-red-500 text-white font-medium hover:bg-red-600 transition-colors">
-                    Cerrar Sesión
-                  </button>
-                </form>
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/upload-card"
+                    className="flex h-12 w-full items-center justify-center rounded-full bg-zinc-900 text-zinc-50 font-medium hover:bg-zinc-800 transition-colors dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                  >
+                    + Subir Cromo
+                  </Link>
+                  <form action={logout}>
+                    <button className="w-full h-12 rounded-full border border-red-200 text-red-500 font-medium hover:bg-red-50 transition-colors dark:border-red-900/30">
+                      Cerrar Sesión
+                    </button>
+                  </form>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col sm:flex-row gap-4">
