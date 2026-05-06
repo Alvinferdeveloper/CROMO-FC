@@ -507,6 +507,17 @@ Examples:
 - Implement skeleton loaders for all async components.
 - Use dynamic imports for large components not needed on initial load.
 
+# Database Management
+
+## Migrations Workflow
+- All schema changes MUST be done via migration files in `supabase/migrations/`.
+- Never apply changes directly in the Supabase Dashboard without a corresponding migration file.
+- Use the Supabase CLI to create and apply migrations.
+
+## Type Generation
+- Use `supabase gen types typescript --project-id <your-project-id> > types/supabase.ts` to keep TypeScript types in sync with the database.
+- Run this command after every schema change.
+
 # Database Schema Guidelines
 
 ## Table Naming
