@@ -139,47 +139,51 @@ Each feature owns:
 # Official Folder Structure
 
 ```txt
-src/
-├── app/
-│
-├── components/
-│   ├── ui/
-│   └── shared/
-│
-├── features/
-│   ├── auth/
-│   ├── cards/
-│   ├── search/
-│   ├── map/
-│   ├── profile/
-│   ├── chat/
-│   ├── collection/
-│   └── home/
-│
-├── hooks/
-├── providers/
-├── store/
-├── lib/
-├── types/
-└── styles/
+app/
+
+components/
+├── ui/
+└── shared/
+
+features/
+├── auth/
+├── cards/
+├── search/
+├── map/
+├── profile/
+├── chat/
+├── collection/
+└── home/
+
+hooks/
+providers/
+store/
+lib/
+types/
+styles/
 ```
 
 ---
 
 # Feature Structure Standard
 
-Every feature should follow this structure when applicable:
+The internal structure of a feature is **evolutive**. DO NOT create all folders at once. Create them only as the feature grows and requires them.
 
+Guidelines for when to create subfolders:
+- `components/`: When you have 1 or more UI elements specific to this feature.
+- `hooks/`: When business logic can be extracted for reuse.
+- `actions/`: When you need to interact with the database via Server Actions.
+- `services/`: For complex logic that doesn't belong in an action (e.g., third-party APIs).
+- `schemas/`: When defining Zod validation for forms or data.
+- `types/`: For TypeScript definitions specific to the feature.
+- `utils/`: For helper functions used only within this feature.
+- `constants/`: For feature-specific configuration or static data.
+
+A simple feature might just look like:
 ```txt
 feature-name/
-├── components/
-├── hooks/
-├── services/
-├── actions/
-├── schemas/
-├── types/
-├── utils/
-└── constants/
+  my-component.tsx
+  use-my-logic.ts
 ```
 
 ---
@@ -386,6 +390,38 @@ External contact methods are allowed:
 - Email
 
 ---
+
+# Design System
+
+## Color Palette
+- Use a modern, vibrant color palette that reflects the excitement of football and collecting.
+- Primary color: A energetic green or blue that stands out.
+- Neutral colors: Zinc/Slate for a clean, premium look.
+- Success/Error/Warning: Semantic colors with good contrast.
+
+## Typography
+- Use clean, sans-serif fonts (e.g., Geist, Inter).
+- Establish a clear type hierarchy with varying weights and sizes.
+- Use larger headlines for emotional impact.
+
+## Iconography
+- Use `lucide-react` for a consistent, modern icon set.
+- Icons should be used to provide visual cues and reduce cognitive load.
+
+# Interactive Feedback
+
+## Hover & Active States
+- Every interactive element must have a hover and active state.
+- Use subtle scale transforms (`hover:scale-[1.02]`) and color shifts.
+
+## Transitions
+- Use smooth transitions for all state changes (e.g., `transition-all duration-200`).
+- Implement layout animations with Framer Motion if needed for a "living" feel.
+
+## Feedback Mechanisms
+- Use Toast notifications for success/error feedback.
+- Use skeleton loaders during data fetching to keep the UI stable.
+- Implement pull-to-refresh and infinite scroll for a mobile-native feel.
 
 # Performance Rules
 
