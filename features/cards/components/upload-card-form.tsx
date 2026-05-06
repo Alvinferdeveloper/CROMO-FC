@@ -45,6 +45,8 @@ export function UploadCardForm() {
     formData.append('albumName', data.albumName || '')
     formData.append('description', data.description || '')
     formData.append('desiredTrade', data.desiredTrade)
+    formData.append('country', data.country)
+    formData.append('locationCity', data.locationCity)
     formData.append('image', data.image)
 
     const result = await createCardPost(formData)
@@ -118,6 +120,27 @@ export function UploadCardForm() {
                 className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
               />
               {errors.teamName && <p className="text-sm text-red-500">{errors.teamName.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">País</label>
+              <input 
+                {...register('country')}
+                placeholder="Ej: México"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+              />
+              {errors.country && <p className="text-sm text-red-500">{errors.country.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Ciudad / Zona</label>
+              <input 
+                {...register('locationCity')}
+                placeholder="Ej: CDMX"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+              />
+              {errors.locationCity && <p className="text-sm text-red-500">{errors.locationCity.message}</p>}
             </div>
           </div>
 

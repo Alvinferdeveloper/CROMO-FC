@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { MapPin, Repeat } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 interface CardItemProps {
   card: {
@@ -10,9 +9,10 @@ interface CardItemProps {
     team_name: string
     image_url: string | null
     desired_trade: string | null
+    country: string | null
+    location_city: string | null
     profiles?: {
       full_name: string | null
-      location_city: string | null
     } | null
   }
 }
@@ -58,7 +58,9 @@ export function CardItem({ card }: CardItemProps) {
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3" />
-            <span>{card.profiles?.location_city || 'Ubicación oculta'}</span>
+            <span className="truncate max-w-[150px]">
+              {card.location_city ? `${card.location_city}, ${card.country || ''}` : 'Ubicación oculta'}
+            </span>
           </div>
           <p className="text-[10px] font-semibold text-zinc-400">
             @{card.profiles?.full_name?.split(' ')[0].toLowerCase() || 'coleccionista'}

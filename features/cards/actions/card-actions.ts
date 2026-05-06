@@ -18,6 +18,8 @@ export async function createCardPost(formData: FormData) {
     albumName: formData.get('albumName'),
     description: formData.get('description'),
     desiredTrade: formData.get('desiredTrade'),
+    country: formData.get('country'),
+    locationCity: formData.get('locationCity'),
     image: formData.get('image'),
   }
 
@@ -34,6 +36,8 @@ export async function createCardPost(formData: FormData) {
     albumName,
     description,
     desiredTrade,
+    country,
+    locationCity,
     image
   } = validatedFields.data
 
@@ -67,6 +71,8 @@ export async function createCardPost(formData: FormData) {
     description: description,
     desired_trade: desiredTrade,
     image_url: publicUrl,
+    country: country,
+    location_city: locationCity,
   })
 
   if (dbError) {
