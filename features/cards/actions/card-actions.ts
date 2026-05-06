@@ -20,6 +20,8 @@ export async function createCardPost(formData: FormData) {
     desiredTrade: formData.get('desiredTrade'),
     country: formData.get('country'),
     locationCity: formData.get('locationCity'),
+    lat: formData.get('lat') ? Number(formData.get('lat')) : undefined,
+    lng: formData.get('lng') ? Number(formData.get('lng')) : undefined,
     image: formData.get('image'),
   }
 
@@ -38,6 +40,8 @@ export async function createCardPost(formData: FormData) {
     desiredTrade,
     country,
     locationCity,
+    lat,
+    lng,
     image
   } = validatedFields.data
 
@@ -73,9 +77,12 @@ export async function createCardPost(formData: FormData) {
     image_url: publicUrl,
     country: country,
     location_city: locationCity,
+    location_lat: lat,
+    location_lng: lng,
   })
 
   if (dbError) {
+    console.log('Error al guardar el post:', dbError)
     return { error: 'Error al guardar el post' }
   }
 

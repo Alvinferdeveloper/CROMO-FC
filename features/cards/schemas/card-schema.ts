@@ -9,6 +9,8 @@ export const cardSchema = z.object({
   desiredTrade: z.string().min(2, 'Dinos qué buscas a cambio'),
   country: z.string().min(2, 'El país es requerido'),
   locationCity: z.string().min(2, 'La ciudad o zona es requerida'),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
   image: z.any().refine((file) => file instanceof File, 'La imagen es requerida'),
 })
 

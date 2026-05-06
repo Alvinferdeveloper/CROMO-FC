@@ -6,21 +6,28 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { cardSchema, type CardValues } from '../schemas/card-schema'
 import { createCardPost } from '../actions/card-actions'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { MapPin } from 'lucide-react'
 
 export function UploadCardForm() {
   const [preview, setPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCapturingLocation, setIsCapturingLocation] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<CardValues>({
     resolver: zodResolver(cardSchema),
   })
+
+  const capturedLat = watch('lat')
+  const capturedLng = watch('lng')
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -31,6 +38,23 @@ export function UploadCardForm() {
         setPreview(reader.result as string)
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const handleGetLocation = () => {
+    setIsCapturingLocation(true)
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setValue('lat', position.coords.latitude)
+          setValue('lng', position.coords.longitude)
+          setIsCapturingLocation(false)
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+          setIsCapturingLocation(false)
+        }
+      )
     }
   }
 
@@ -47,6 +71,8 @@ export function UploadCardForm() {
     formData.append('desiredTrade', data.desiredTrade)
     formData.append('country', data.country)
     formData.append('locationCity', data.locationCity)
+    if (data.lat) formData.append('lat', data.lat.toString())
+    if (data.lng) formData.append('lng', data.lng.toString())
     formData.append('image', data.image)
 
     const result = await createCardPost(formData)
@@ -98,7 +124,7 @@ export function UploadCardForm() {
             <input
               {...register('playerName')}
               placeholder="Ej: Lionel Messi"
-              className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+              className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent outline-none focus:ring-2 focus:ring-primary"
             />
             {errors.playerName && <p className="text-sm text-red-500">{errors.playerName.message}</p>}
           </div>
@@ -109,7 +135,7 @@ export function UploadCardForm() {
               <input
                 {...register('cardNumber')}
                 placeholder="Ej: ARG 10"
-                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
             <div className="space-y-2">
@@ -117,7 +143,7 @@ export function UploadCardForm() {
               <input
                 {...register('teamName')}
                 placeholder="Ej: Argentina"
-                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.teamName && <p className="text-sm text-red-500">{errors.teamName.message}</p>}
             </div>
@@ -129,7 +155,7 @@ export function UploadCardForm() {
               <input
                 {...register('country')}
                 placeholder="Ej: México"
-                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.country && <p className="text-sm text-red-500">{errors.country.message}</p>}
             </div>
@@ -138,11 +164,22 @@ export function UploadCardForm() {
               <input
                 {...register('locationCity')}
                 placeholder="Ej: CDMX"
-                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent"
+                className="w-full h-10 px-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.locationCity && <p className="text-sm text-red-500">{errors.locationCity.message}</p>}
             </div>
           </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleGetLocation}
+            className="w-full h-11 rounded-xl"
+            disabled={isCapturingLocation}
+          >
+            <MapPin className="mr-2 h-4 w-4" />
+            {isCapturingLocation ? 'Capturando...' : capturedLat ? 'Ubicación GPS capturada ✓' : 'Fijar ubicación GPS (opcional)'}
+          </Button>
 
           <div className="space-y-2">
             <label className="text-sm font-medium">¿Qué buscas a cambio?</label>
@@ -150,7 +187,7 @@ export function UploadCardForm() {
               {...register('desiredTrade')}
               placeholder="Ej: Cambio por Cristiano Ronaldo o 3 del grupo C"
               rows={3}
-              className="w-full p-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent resize-none"
+              className="w-full p-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-transparent resize-none outline-none focus:ring-2 focus:ring-primary"
             />
             {errors.desiredTrade && <p className="text-sm text-red-500">{errors.desiredTrade.message}</p>}
           </div>
