@@ -24,6 +24,14 @@ export async function Navbar() {
             >
               Explorar
             </Link>
+            {user && (
+              <Link
+                href="/my-cards"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                Mis Cromos
+              </Link>
+            )}
             <Link
               href="/map"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"

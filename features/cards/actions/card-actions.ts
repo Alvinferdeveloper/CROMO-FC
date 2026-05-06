@@ -82,3 +82,37 @@ export async function createCardPost(formData: FormData) {
   revalidatePath('/')
   redirect('/')
 }
+
+export async function toggleCardAvailability(cardId: string, currentStatus: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'No autorizado' }
+
+  const { error } = await supabase
+    .from('card_posts')
+    .update({ is_available: !currentStatus })
+    .eq('id', cardId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/my-cards')
+  revalidatePath('/')
+  return { success: true }
+}
+
+export async function deleteCardPost(cardId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'No autorizado' }
+
+  const { error } = await supabase
+    .from('card_posts')
+    .delete()
+    .eq('id', cardId)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/my-cards')
+  revalidatePath('/')
+  return { success: true }
+}
