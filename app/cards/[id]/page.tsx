@@ -40,7 +40,7 @@ export default async function CardDetailPage({ params }: PageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Imagen del Cromo */}
-          <div className="relative aspect-[3/4] w-full max-w-lg mx-auto overflow-hidden rounded-3xl shadow-2xl bg-muted border">
+          <div className="relative aspect-3/4 w-full max-w-lg mx-auto overflow-hidden rounded-3xl shadow-2xl bg-muted border">
             {card.image_url ? (
               <Image
                 src={card.image_url}
