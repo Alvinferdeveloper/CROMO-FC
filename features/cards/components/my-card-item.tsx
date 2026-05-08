@@ -33,7 +33,7 @@ export function MyCardItem({ card }: MyCardItemProps) {
       "relative group overflow-hidden rounded-2xl border bg-card transition-all",
       !card.is_available && "opacity-60 grayscale-[0.5]"
     )}>
-      <div className="relative aspect-[3/4] overflow-hidden bg-muted">
+      <div className="relative aspect-3/4 overflow-hidden bg-muted">
         {card.image_url && (
           <Image
             src={card.image_url}
@@ -58,9 +58,9 @@ export function MyCardItem({ card }: MyCardItemProps) {
         </div>
 
         <div className="flex gap-2">
-          <Button 
-            variant={card.is_available ? "outline" : "default"} 
-            size="sm" 
+          <Button
+            variant={card.is_available ? "outline" : "default"}
+            size="sm"
             className="flex-1 rounded-xl h-10"
             onClick={handleToggle}
             disabled={isLoading}
@@ -71,9 +71,9 @@ export function MyCardItem({ card }: MyCardItemProps) {
               <><RefreshCcw className="mr-2 h-4 w-4" /> Reactivar</>
             )}
           </Button>
-          <Button 
-            variant="destructive" 
-            size="icon" 
+          <Button
+            variant="destructive"
+            size="icon"
             className="rounded-xl h-10 w-10 shrink-0"
             onClick={handleDelete}
             disabled={isLoading}
