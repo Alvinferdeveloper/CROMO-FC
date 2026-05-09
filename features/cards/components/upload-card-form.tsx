@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { cardSchema, type CardValues } from '../schemas/card-schema'
 import { createCardPost } from '../actions/card-actions'
@@ -9,11 +9,12 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import {
   MapPin, Camera, Info, Loader2, User, Hash,
-  Shield, Flag, Navigation, ArrowLeftRight, CheckCircle2,
+  Flag, Navigation, ArrowLeftRight, CheckCircle2,
   ImageIcon
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CameraCapture } from './camera-capture'
+import { TeamSelector } from './team-selector'
 
 interface UploadCardFormProps {
   onSuccess?: () => void
@@ -32,6 +33,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<CardValues>({
     resolver: zodResolver(cardSchema),
@@ -98,7 +100,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
 
-        {/* ── Left side: image capture ── */}
+        {/* ── Left side: Image capture ── */}
         <div className="flex flex-col gap-6">
           <AnimatePresence mode="wait">
             {isCameraActive ? (
@@ -122,7 +124,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
               </motion.div>
             ) : (
               <div
-                className={`relative aspect- w-full lg:max-w-md mx-auto rounded-[3rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 group
+                className={`relative aspect-3/4 w-full lg:max-w-md mx-auto rounded-[3rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 group
                   ${preview
                     ? 'shadow-2xl shadow-emerald-500/20 border-2 border-emerald-500/50 bg-emerald-50'
                     : 'border-2 border-dashed border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:border-emerald-400'
@@ -182,7 +184,6 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
           <input
             type="file"
             accept="image/*"
-            capture="environment"
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
@@ -209,7 +210,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
         {/* ── Right side: form ── */}
         <div className="flex flex-col gap-6">
 
-          {/* Block 1: Card data */}
+          {/* Player Info */}
           <div className="space-y-4">
             <div className="space-y-1.5 group">
               <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 flex justify-between">
@@ -245,20 +246,23 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 flex justify-between">
                   Equipo <span className="text-red-400">*</span>
                 </label>
-                <div className="relative">
-                  <Shield className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-                  <input
-                    {...register('teamName')}
-                    placeholder="Argentina"
-                    className={`w-full h-12 pl-10 pr-4 rounded-xl bg-slate-100 dark:bg-zinc-900 border ${errors.teamName ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-emerald-500 focus:bg-white dark:focus:bg-zinc-950 focus:ring-4 focus:ring-emerald-500/10'} outline-none transition-all font-semibold text-slate-800 dark:text-white`}
-                  />
-                </div>
+                <Controller
+                  name="teamName"
+                  control={control}
+                  render={({ field }) => (
+                    <TeamSelector
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={!!errors.teamName}
+                    />
+                  )}
+                />
                 {errors.teamName && <p className="text-[10px] font-bold text-red-500">{errors.teamName.message}</p>}
               </div>
             </div>
           </div>
 
-          {/* Block 2: Location */}
+          {/* Location */}
           <div className="p-5 rounded-2xl bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800 space-y-4">
             <h3 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
               <MapPin className="h-4 w-4 text-slate-400" /> Dónde te encuentras
