@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Repeat2 } from 'lucide-react'
+import { MapPin, ArrowLeftRight, User } from 'lucide-react'
 
 interface CardItemProps {
   card: {
@@ -17,69 +17,95 @@ interface CardItemProps {
 }
 
 export function CardItem({ card }: CardItemProps) {
-  const username = card.profiles?.full_name?.split(' ')[0].toLowerCase() || 'user'
+  const username = card.profiles?.full_name?.split(' ')[0] || 'Usuario'
   const location = card.location_city
     ? `${card.location_city}${card.country ? `, ${card.country}` : ''}`
     : null
 
   return (
-    <Link href={`/cards/${card.id}`} className="block group">
-      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-black/8 hover:-translate-y-0.5 hover:border-primary/25">
-
-        {/* Image */}
-        <div className="relative aspect-square overflow-hidden bg-muted">
+    <Link href={`/cards/${card.id}`} className="block group h-full">
+      <div className="relative h-full flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:shadow-emerald-500/10 group-hover:-translate-y-1.5 group-hover:border-emerald-400/50">
+        <div className="relative aspect-3/4 overflow-hidden bg-slate-100 dark:bg-zinc-800 shrink-0">
           {card.image_url ? (
             <Image
               src={card.image_url}
               alt={card.player_name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-1 text-muted-foreground/40">
-              <span className="text-3xl">🃏</span>
-              <span className="text-xs font-medium">Sin foto</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-slate-200 to-slate-100 dark:from-zinc-800 dark:to-zinc-900">
+              <span className="text-5xl opacity-50 drop-shadow-sm">🃏</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">Sin foto</span>
             </div>
           )}
 
-          {/* Gradient overlay bottom */}
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/60 to-transparent" />
+          {/* Use a bottom gradient to darken the map text and pin so they are perfectly legible. */}
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
 
-          {/* Card number badge */}
-          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] font-bold text-white/90 tracking-wider">
-            #{card.card_number || 'S/N'}
+          {/* Number badge (Premium Style) */}
+          <div className="absolute top-2.5 right-2.5 px-2 py-1 rounded-md bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shadow-md border border-black/5 dark:border-white/10">
+            <span className="text-[11px] font-black text-slate-900 dark:text-white tracking-widest">
+              #{card.card_number || 'S/N'}
+            </span>
           </div>
 
-          {/* Location bottom-left over image */}
+          {/* Location above the image */}
           {location && (
-            <div className="absolute bottom-2 left-2 flex items-center gap-1 text-[10px] text-white/80 font-medium">
-              <MapPin className="h-2.5 w-2.5 shrink-0" />
-              <span className="truncate max-w-[110px]">{location}</span>
+            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center gap-1.5 text-white/90">
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+              <span className="text-[11px] font-semibold truncate drop-shadow-md">
+                {location}
+              </span>
             </div>
           )}
         </div>
 
         {/* Info */}
-        <div className="px-3 py-2.5 space-y-1.5">
+        <div className="flex flex-col flex-1 p-3.5 gap-3">
+
+          {/* Player and Team */}
           <div>
-            <h3 className="font-bold text-sm leading-tight truncate">{card.player_name}</h3>
-            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide truncate">
+            <h3 className="font-extrabold text-[15px] leading-none text-slate-900 dark:text-white truncate mb-1.5 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+              {card.player_name}
+            </h3>
+            <p className="text-[10px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider truncate">
               {card.team_name}
             </p>
           </div>
 
-          {card.desired_trade && (
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground border-t border-border/50 pt-1.5">
-              <Repeat2 className="h-3 w-3 text-primary shrink-0" />
-              <span className="truncate italic">{card.desired_trade}</span>
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="flex items-center justify-end pt-0.5">
-            <span className="text-[10px] font-semibold text-muted-foreground/60">@{username}</span>
+          {/* Trade Desired (Call to Action visual) */}
+          <div className="mt-auto">
+            {card.desired_trade ? (
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20">
+                <ArrowLeftRight className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 leading-none mb-0.5">
+                    Busca a cambio
+                  </span>
+                  <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 truncate">
+                    {card.desired_trade}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="h-[38px] border border-dashed border-slate-200 dark:border-zinc-800 rounded-lg flex items-center justify-center">
+                <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-medium">Abierto a ofertas</span>
+              </div>
+            )}
           </div>
+
+          {/* User Footer */}
+          <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-zinc-800">
+            <div className="w-4 h-4 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center shrink-0">
+              <User className="w-2.5 h-2.5 text-slate-500 dark:text-zinc-400" />
+            </div>
+            <span className="text-[11px] font-medium text-slate-600 dark:text-zinc-400 truncate">
+              {username}
+            </span>
+          </div>
+
         </div>
       </div>
     </Link>
