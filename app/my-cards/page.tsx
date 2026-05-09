@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase-server'
 import { MyCardItem } from '@/features/cards/components/my-card-item'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { PlusCircle } from 'lucide-react'
 import { redirect } from 'next/navigation'
+
+import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
 
 export default async function MyCardsPage() {
   const supabase = await createClient()
@@ -25,12 +26,14 @@ export default async function MyCardsPage() {
             <h1 className="text-4xl font-black tracking-tighter">Mis Cromos</h1>
             <p className="text-muted-foreground font-medium">Gestiona tu colección y tus intercambios</p>
           </div>
-          <Button asChild className="rounded-full h-12 px-6 font-bold shadow-lg shadow-primary/20">
-            <Link href="/upload-card">
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Subir nuevo cromo
-            </Link>
-          </Button>
+          <UploadCardModal
+            trigger={
+              <Button className="rounded-full h-12 px-6 font-bold shadow-lg shadow-primary/20 gap-2">
+                <PlusCircle className="h-5 w-5" />
+                Subir nuevo cromo
+              </Button>
+            }
+          />
         </div>
 
         {cards && cards.length > 0 ? (
@@ -46,9 +49,13 @@ export default async function MyCardsPage() {
             <p className="text-muted-foreground mb-8 max-w-xs mx-auto font-medium">
               Empieza a publicar tus repetidas para que otros coleccionistas puedan encontrarte.
             </p>
-            <Button asChild size="lg" className="rounded-full px-10 h-14 text-lg">
-              <Link href="/upload-card">Publicar mi primer cromo</Link>
-            </Button>
+            <UploadCardModal
+              trigger={
+                <Button size="lg" className="rounded-full px-10 h-14 text-lg font-bold">
+                  Publicar mi primer cromo
+                </Button>
+              }
+            />
           </div>
         )}
       </div>

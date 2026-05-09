@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { UploadCardModal } from './upload-card-modal'
 
 export function MarketplaceEmpty() {
   return (
@@ -11,9 +11,13 @@ export function MarketplaceEmpty() {
       <p className="text-sm text-muted-foreground max-w-xs mb-6 leading-relaxed">
         Prueba con otros filtros o sé el primero en publicar un cromo en esta zona.
       </p>
-      <Button asChild className="rounded-full px-8 h-10 text-sm font-bold">
-        <Link href="/upload-card">Publicar cromo</Link>
-      </Button>
+      <UploadCardModal 
+        trigger={
+          <Button className="rounded-full px-8 h-10 text-sm font-bold">
+            Publicar cromo
+          </Button>
+        }
+      />
     </div>
   )
 }
