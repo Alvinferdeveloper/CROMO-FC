@@ -55,7 +55,7 @@ export default function MapView() {
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] w-full relative">
+    <div className="h-full w-full relative">
       <MapContainer
         center={[20, -20]}
         zoom={3}

@@ -39,7 +39,7 @@ export default async function CardDetailPage({ params }: PageProps) {
   }).format(publishDate)
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 pb-24 pt-6">
+    <div className="min-h-screen bg-slate-50 mt-14 dark:bg-zinc-950 pb-24 pt-6">
       <div className="container max-w-5xl mx-auto px-4 sm:px-6">
 
         <Link

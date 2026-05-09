@@ -24,8 +24,8 @@ export default async function Home({ searchParams }: PageProps) {
   }
 
   // Initial fetch using SSR
-  const { data: initialCards, error } = await getPaginatedCards({ 
-    page: 0, 
+  const { data: initialCards, error } = await getPaginatedCards({
+    page: 0,
     search,
     userCity: userProfile?.location_city
   })
@@ -40,8 +40,8 @@ export default async function Home({ searchParams }: PageProps) {
         style={{ backgroundImage: `url('${HERO_BG_URL}')` }}
       >
         <div className="absolute inset-0 bg-linear-to-br from-black/90 via-black/80 to-emerald-950/90 z-2" />
-        
-        <div className="relative z-10 max-w-3xl w-full mx-auto text-center flex flex-col items-center gap-6">
+
+        <div className="relative z-10 max-w-3xl w-full mx-auto  mt-8 text-center flex flex-col items-center gap-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white/90 text-xs font-bold tracking-widest uppercase shadow-lg">
             <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] animate-pulse" />
             Mundial 2026 · Álbum oficial
@@ -86,8 +86,8 @@ export default async function Home({ searchParams }: PageProps) {
               </p>
             </div>
           ) : initialCards && initialCards.length > 0 ? (
-            <SmartFeedContainer 
-              initialCards={initialCards} 
+            <SmartFeedContainer
+              initialCards={initialCards}
               search={search}
               userCity={userProfile?.location_city}
             />
