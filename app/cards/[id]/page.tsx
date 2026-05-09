@@ -23,6 +23,8 @@ export default async function CardDetailPage({ params }: PageProps) {
     notFound()
   }
 
+  console.log(card)
+
   const contactMethods = (card.profiles?.contact_methods as any) || {}
   const whatsapp = contactMethods.whatsapp
   const instagram = contactMethods.instagram
@@ -43,7 +45,7 @@ export default async function CardDetailPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
           <div className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
-            <div className="relative aspect-3/44 w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-black/10 dark:shadow-black/40 bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 group">
+            <div className="relative aspect-3/4 w-full overflow-hidden rounded-[2rem] shadow-2xl shadow-black/10 dark:shadow-black/40 bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 group">
               <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/10 to-white/30 dark:via-white/5 dark:to-white/10 opacity-50 z-10 pointer-events-none transition-opacity duration-500 group-hover:opacity-100" />
 
               {card.image_url ? (
