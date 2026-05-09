@@ -27,7 +27,7 @@ export function CardFilters() {
   const hasSearch = searchParams.get('search')
 
   return (
-    <div className="w-full max-w-5xl mx-auto mb-8 space-y-3">
+    <div className="w-full max-w-5xl mx-auto mb-2 space-y-3">
       {/* Toggle row */}
       <div className="flex items-center gap-3">
         <button
@@ -61,7 +61,7 @@ export function CardFilters() {
         'overflow-hidden transition-all duration-300 ease-in-out',
         isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
       )}>
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 pt-2 pb-2 px-2">
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
