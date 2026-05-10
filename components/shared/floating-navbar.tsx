@@ -51,7 +51,7 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
 
         {/* ── DESKTOP NAVIGATION ── */}
         <div className="hidden md:flex items-center gap-1">
-          <NavLink href="/" icon={<Home className="w-4 h-4" />} label="Explorar" />
+          <NavLink href="/explore" icon={<Home className="w-4 h-4" />} label="Explorar" />
           <NavLink href="/map" icon={<Map className="w-4 h-4" />} label="Mapa" />
           {user && <NavLink href="/my-cards" icon={<Layers className="w-4 h-4" />} label="Mis Cromos" />}
         </div>
@@ -116,7 +116,7 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
             className="absolute top-20 left-4 right-4 bg-white dark:bg-zinc-900 rounded-[2rem] border border-slate-200 dark:border-zinc-800 shadow-2xl p-4 pointer-events-auto md:hidden overflow-hidden"
           >
             <div className="grid grid-cols-1 gap-2">
-              <MobileNavLink href="/" icon={<Home className="w-5 h-4" />} label="Explorar" onClick={() => setIsMobileMenuOpen(false)} />
+              <MobileNavLink href="/explore" icon={<Home className="w-5 h-4" />} label="Explorar" onClick={() => setIsMobileMenuOpen(false)} />
               <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" onClick={() => setIsMobileMenuOpen(false)} />
               {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" onClick={() => setIsMobileMenuOpen(false)} />}
               <div className="h-px bg-slate-100 dark:bg-zinc-800 my-2" />
