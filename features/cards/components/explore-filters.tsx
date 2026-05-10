@@ -3,10 +3,10 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Search, MapPin, SlidersHorizontal, Globe } from 'lucide-react'
+import { MapPin, SlidersHorizontal, Globe } from 'lucide-react'
 
 const TEAMS = ['Argentina', 'México', 'EE.UU.', 'Canadá', 'España']
-const RARITIES = ['Legendarios', 'Brillantes', 'Normales']
+const RARITIES = ['Normal', 'Bronce', 'Plata', 'Oro']
 
 export function ExploreFilters() {
   const router = useRouter()
@@ -15,8 +15,9 @@ export function ExploreFilters() {
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [country, setCountry] = useState(searchParams.get('country') || '')
   const [city, setCity] = useState(searchParams.get('city') || '')
+  const [rarity, setRarity] = useState(searchParams.get('rarity') || '')
 
-  const applyFilters = () => {
+  const applyFilters = (newRarity?: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (search) params.set('search', search)
     else params.delete('search')
@@ -24,7 +25,18 @@ export function ExploreFilters() {
     else params.delete('country')
     if (city) params.set('city', city)
     else params.delete('city')
+    
+    const r = newRarity !== undefined ? newRarity : rarity
+    if (r) params.set('rarity', r)
+    else params.delete('rarity')
+    
     router.push(`/explore?${params.toString()}`)
+  }
+
+  const handleRarityChange = (r: string) => {
+    const nextRarity = rarity === r ? '' : r
+    setRarity(nextRarity)
+    applyFilters(nextRarity)
   }
 
   return (
@@ -71,7 +83,12 @@ export function ExploreFilters() {
             <button 
               key={team}
               onClick={() => {setSearch(team); applyFilters()}}
-              className="px-3 py-1.5 rounded-lg border border-border bg-card text-xs font-medium hover:border-primary/40 hover:text-primary hover:bg-primary/5 active:scale-[0.96] transition-[transform,border-color,color,background-color] duration-200"
+              className={`px-3 py-1.5 rounded-lg border text-xs font-medium active:scale-[0.96] transition-[transform,border-color,color,background-color] duration-200
+                ${search === team 
+                  ? 'border-primary bg-primary/5 text-primary' 
+                  : 'border-border bg-card hover:border-primary/40 hover:text-primary hover:bg-primary/5'
+                }
+              `}
               style={{ 
                 transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)',
                 animationDelay: `${i * 40}ms`
@@ -87,14 +104,16 @@ export function ExploreFilters() {
       <div className="space-y-3">
         <p className="text-xs font-medium text-muted-foreground">Rareza</p>
         <div className="space-y-2">
-          {RARITIES.map((rarity) => (
-            <label key={rarity} className="flex items-center gap-2.5 cursor-pointer group py-0.5">
+          {RARITIES.map((r) => (
+            <label key={r} className="flex items-center gap-2.5 cursor-pointer group py-0.5">
               <input 
                 type="checkbox" 
-                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary" 
+                checked={rarity === r}
+                onChange={() => handleRarityChange(r)}
+                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary cursor-pointer" 
               />
-              <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors duration-150">
-                {rarity}
+              <span className={`text-sm font-medium transition-colors duration-150 ${rarity === r ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
+                {r}
               </span>
             </label>
           ))}
@@ -103,7 +122,7 @@ export function ExploreFilters() {
 
       <div className="space-y-2 pt-2">
         <Button 
-          onClick={applyFilters} 
+          onClick={() => applyFilters()} 
           className="w-full h-10 rounded-xl text-sm font-semibold active:scale-[0.97] transition-transform duration-150"
           style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
         >
@@ -111,7 +130,7 @@ export function ExploreFilters() {
         </Button>
         
         <button
-          onClick={() => {setSearch(''); setCountry(''); setCity(''); router.push('/explore')}}
+          onClick={() => {setSearch(''); setCountry(''); setCity(''); setRarity(''); router.push('/explore')}}
           className="w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-150 text-center"
         >
           Limpiar todos

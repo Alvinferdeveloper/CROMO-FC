@@ -37,6 +37,9 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     formState: { errors },
   } = useForm<CardValues>({
     resolver: zodResolver(cardSchema),
+    defaultValues: {
+      rarity: 'Normal',
+    }
   })
 
   const capturedLat = watch('lat')
@@ -84,6 +87,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     formData.append('locationCity', data.locationCity)
     if (data.lat) formData.append('lat', data.lat.toString())
     if (data.lng) formData.append('lng', data.lng.toString())
+    formData.append('rarity', data.rarity)
     formData.append('image', data.image)
 
     const result = await createCardPost(formData)
@@ -258,6 +262,33 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                   )}
                 />
                 {errors.teamName && <p className="text-[10px] font-bold text-red-500">{errors.teamName.message}</p>}
+              </div>
+            </div>
+
+            {/* Rarity Selector */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                Tipo de cromo / Rareza
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {(['Normal', 'Bronce', 'Plata', 'Oro'] as const).map((r) => {
+                  const isActive = watch('rarity') === r || (!watch('rarity') && r === 'Normal')
+                  return (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setValue('rarity', r)}
+                      className={`h-11 rounded-xl text-[10px] font-black uppercase tracking-tighter border transition-all
+                        ${isActive 
+                          ? 'border-primary bg-primary/5 text-primary shadow-inner ring-2 ring-primary/20' 
+                          : 'border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-slate-400 hover:border-slate-300'
+                        }
+                      `}
+                    >
+                      {r}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>

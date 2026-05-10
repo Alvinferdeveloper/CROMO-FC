@@ -22,6 +22,7 @@ export async function createCardPost(formData: FormData) {
     locationCity: formData.get('locationCity'),
     lat: formData.get('lat') ? Number(formData.get('lat')) : undefined,
     lng: formData.get('lng') ? Number(formData.get('lng')) : undefined,
+    rarity: formData.get('rarity') || 'Normal',
     image: formData.get('image'),
   }
 
@@ -42,6 +43,7 @@ export async function createCardPost(formData: FormData) {
     locationCity,
     lat,
     lng,
+    rarity,
     image
   } = validatedFields.data
 
@@ -79,6 +81,7 @@ export async function createCardPost(formData: FormData) {
     location_city: locationCity,
     location_lat: lat,
     location_lng: lng,
+    rarity: rarity,
   })
 
   if (dbError) {

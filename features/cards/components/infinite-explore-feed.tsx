@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { CardItem } from './card-item'
 import { getExploreCards } from '../actions/explore-actions'
 import { Loader2 } from 'lucide-react'
+import { Card } from '@/types/card'
 
 interface InfiniteExploreFeedProps {
-  initialCards: any[]
+  initialCards: Card[]
   searchParams: any
 }
 
 export function InfiniteExploreFeed({ initialCards, searchParams }: InfiniteExploreFeedProps) {
-  const [cards, setCards] = useState(initialCards)
+  const [cards, setCards] = useState<Card[]>(initialCards)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
   const [isLoading, setIsLoading] = useState(false)
@@ -41,6 +42,7 @@ export function InfiniteExploreFeed({ initialCards, searchParams }: InfiniteExpl
     try {
       const nextCards = await getExploreCards({
         ...searchParams,
+        rarity: searchParams.rarity,
         lat: searchParams.lat ? parseFloat(searchParams.lat) : null,
         lng: searchParams.lng ? parseFloat(searchParams.lng) : null,
         page,

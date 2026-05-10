@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { Hero } from '@/features/home/components/hero'
 import { TeaserSection } from '@/features/home/components/teaser-section'
 import { HowItWorks } from '@/features/home/components/how-it-works'
+import { Card } from '@/types/card'
 
 /**
  * Hybrid Home Page (Landing Page).
@@ -29,17 +30,18 @@ export default async function Home() {
     p_limit: 10
   })
 
-  const formattedTeaser = teaserCards?.map((card: any) => ({
+  // 3. Format teaser data for CardItem compatibility
+  const formattedTeaser: Card[] = teaserCards?.map((card: any) => ({
     ...card,
     profiles: {
       full_name: card.profile_name
     }
-  }))
+  })) || []
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Hero />
-      <TeaserSection cards={formattedTeaser || []} userCity={userProfile?.location_city} />
+      <TeaserSection cards={formattedTeaser} userCity={userProfile?.location_city} />
       <HowItWorks />
     </div>
   )

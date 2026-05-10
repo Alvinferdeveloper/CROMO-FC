@@ -4,6 +4,7 @@ import { TrendingSidebar } from '@/features/cards/components/trending-sidebar'
 import { ExploreSearchHeader } from '@/features/cards/components/explore-search-header'
 import { InfiniteExploreFeed } from '@/features/cards/components/infinite-explore-feed'
 import { MapPin, Info } from 'lucide-react'
+import { Card } from '@/types/card'
 
 interface PageProps {
   searchParams: Promise<{
@@ -13,6 +14,7 @@ interface PageProps {
     lat?: string;
     lng?: string;
     team?: string;
+    rarity?: string;
   }>
 }
 
@@ -30,6 +32,7 @@ export default async function ExplorePage({ searchParams }: PageProps) {
     p_country: params.country || null,
     p_city: params.city || null,
     p_team: params.team || null,
+    p_rarity: params.rarity || null,
     p_user_lat: params.lat ? parseFloat(params.lat) : null,
     p_user_lng: params.lng ? parseFloat(params.lng) : null,
     p_limit: 12,
@@ -37,7 +40,7 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   })
 
   // Format initial data
-  const formattedInitial = initialCards?.map((card: any) => ({
+  const formattedInitial: Card[] = initialCards?.map((card: any) => ({
     ...card,
     profiles: {
       full_name: card.profile_name

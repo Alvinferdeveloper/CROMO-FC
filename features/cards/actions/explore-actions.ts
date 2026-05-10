@@ -7,6 +7,7 @@ export async function getExploreCards({
   country,
   city,
   team,
+  rarity,
   lat,
   lng,
   page = 0,
@@ -16,6 +17,7 @@ export async function getExploreCards({
   country?: string
   city?: string
   team?: string
+  rarity?: any
   lat?: number | null
   lng?: number | null
   page?: number
@@ -29,6 +31,7 @@ export async function getExploreCards({
     p_country: country || null,
     p_city: city || null,
     p_team: team || null,
+    p_rarity: rarity || null,
     p_user_lat: lat || null,
     p_user_lng: lng || null,
     p_limit: pageSize,

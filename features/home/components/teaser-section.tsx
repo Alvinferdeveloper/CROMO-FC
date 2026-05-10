@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { MapPin, Search, ArrowRight, Users, Flame } from 'lucide-react'
 import { CardItem } from '@/features/cards/components/card-item'
+import { Card } from '@/types/card'
 
 interface TeaserSectionProps {
-  cards: any[]
+  cards: Card[]
   userCity?: string | null
 }
 

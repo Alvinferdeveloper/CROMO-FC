@@ -11,6 +11,7 @@ export const cardSchema = z.object({
   locationCity: z.string().min(2, 'La ciudad o zona es requerida'),
   lat: z.number().optional(),
   lng: z.number().optional(),
+  rarity: z.enum(['Normal', 'Bronce', 'Plata', 'Oro']),
   image: z.any().refine((file) => file instanceof File, 'La imagen es requerida'),
 })
 
