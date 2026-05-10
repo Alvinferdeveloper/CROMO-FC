@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { MapPin, Search, ArrowRight } from 'lucide-react'
+import { MapPin, Search, ArrowRight, Users, Flame } from 'lucide-react'
 import { CardItem } from '@/features/cards/components/card-item'
 
 interface TeaserSectionProps {
@@ -10,78 +10,97 @@ interface TeaserSectionProps {
 
 export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
   return (
-    <main className="relative z-20 container mx-auto px-4 sm:px-6 -mt-16 mb-24">
-      <div className="flex flex-col gap-10">
-        {/* Enhanced Section Header */}
-        <div className="relative overflow-hidden bg-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-border">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+    <section className="relative z-20 max-w-[1440px] mx-auto w-full px-6 sm:px-8 -mt-16 mb-32">
+      <div className="flex flex-col gap-12">
+        
+        {/* Bold Asymmetric Callout Header */}
+        <div className="relative overflow-hidden bg-card rounded-[2rem] shadow-xl border border-border group">
+          {/* Subtle animated background glow */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity duration-1000 -translate-y-1/2 translate-x-1/3" />
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="space-y-4 max-w-2xl">
-              <div className="flex flex-wrap gap-2">
+          <div className="relative z-10 flex flex-col md:flex-row">
+            
+            {/* Left Content Area (70%) */}
+            <div className="flex-1 p-8 md:p-12 space-y-6">
+              <div className="flex flex-wrap items-center gap-3">
                 {userCity ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
-                    <MapPin className="mr-1 h-3 w-3" /> Zona Activa: {userCity}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    <MapPin className="h-3 w-3" /> Zona activa: {userCity}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">
-                    <Search className="mr-1 h-3 w-3" /> Tendencias Globales
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider">
+                    <Search className="h-3 w-3" /> Tendencias globales
                   </span>
                 )}
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-foreground text-[11px] font-bold uppercase tracking-wider border border-border">
+                  <Flame className="h-3 w-3 text-orange-500" />
                   {cards?.length || 0} publicaciones recientes
                 </span>
               </div>
 
-              <div className="space-y-2">
-                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground leading-none">
-                  {userCity ? 'Intercambios cerca de ti' : 'Explora el mercado mundial'}
+              <div className="space-y-3 max-w-2xl">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1]">
+                  {userCity ? 'El mercado en tu ciudad está activo.' : 'Explora el mercado mundial.'}
                 </h2>
-                <p className="text-muted-foreground font-medium text-lg max-w-lg leading-relaxed">
-                  Encuentra coleccionistas activos que buscan completar su álbum. La forma más rápida de conseguir tus faltantes.
+                <p className="text-muted-foreground font-medium text-lg md:text-xl leading-relaxed">
+                  Encuentra coleccionistas que buscan completar su álbum. La forma más rápida, segura y moderna de conseguir tus faltantes.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 border-t lg:border-t-0 lg:border-l border-border pt-6 lg:pt-0 lg:pl-10">
-              <div className="text-center sm:text-left">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Comunidad 2026</p>
-                <div className="flex -space-x-3 mb-2 justify-center sm:justify-start">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[10px]">👤</div>
-                  ))}
-                  <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground">+99</div>
+            {/* Right Call-to-Action Area (30%) - Split Design */}
+            <div className="w-full md:w-80 bg-accent/30 border-t md:border-t-0 md:border-l border-border p-8 flex flex-col justify-center gap-6">
+              <div>
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <Users className="h-3 w-3" /> Comunidad 2026
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    {[1, 2, 3].map(i => (
+                      <div key={i} className="w-9 h-9 rounded-full border-2 border-card bg-muted flex items-center justify-center text-[10px] relative z-10 hover:z-20 transition-transform hover:scale-110">👤</div>
+                    ))}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-foreground leading-none">+12k</span>
+                    <span className="text-[10px] text-muted-foreground font-medium">coleccionistas</span>
+                  </div>
                 </div>
-                <p className="text-xs font-bold text-muted-foreground italic">&quot;Completé mi álbum ayer, ¡gracias!&quot;</p>
               </div>
-              <Button asChild className="w-full sm:w-auto rounded-2xl h-14 px-8 font-black shadow-xl shadow-primary/20">
+              
+              <Button 
+                asChild 
+                className="w-full rounded-2xl h-14 font-semibold text-base shadow-lg shadow-primary/20 active:scale-[0.97] transition-transform duration-200"
+                style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+              >
                 <Link href="/explore">
                   Ver todo el mercado <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
+            
           </div>
         </div>
 
         {/* Cards Grid */}
-        {cards && cards.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8 px-2">
-            {cards.map((card) => (
-              <CardItem key={card.id} card={card} />
-            ))}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-lg font-bold text-foreground tracking-tight">Agregados recientemente</h3>
           </div>
-        ) : (
-          <div className="py-20 text-center bg-card/50 rounded-[3rem] border-2 border-dashed border-border">
-            <p className="text-muted-foreground font-bold">No hay cromos subidos aún cerca de ti.</p>
-          </div>
-        )}
-
-        <div className="sm:hidden flex justify-center pt-4">
-          <Button variant="link" asChild className="font-bold text-lg">
-            <Link href="/explore">Ver todo el mercado <ArrowRight className="ml-2 h-4 w-4" /></Link>
-          </Button>
+          
+          {cards && cards.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              {cards.map((card) => (
+                <CardItem key={card.id} card={card} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-20 flex flex-col items-center justify-center bg-accent/30 rounded-[2rem] border border-border">
+              <p className="text-muted-foreground font-medium">No hay cromos subidos aún cerca de ti.</p>
+            </div>
+          )}
         </div>
+        
       </div>
-    </main>
+    </section>
   )
 }
