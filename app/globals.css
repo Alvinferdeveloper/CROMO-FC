@@ -117,15 +117,19 @@
   --sidebar-ring: oklch(0.696 0.17 162.48);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
   }
-  body {
-    @apply bg-background text-foreground;
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
   }
-  html {
-    @apply font-sans;
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
   }
 }
 
