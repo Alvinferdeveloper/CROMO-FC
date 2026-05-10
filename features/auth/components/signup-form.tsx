@@ -30,12 +30,12 @@ export function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl dark:bg-zinc-900">
+    <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Crea tu cuenta
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
+        <p className="text-muted-foreground">
           Únete a la comunidad de coleccionistas
         </p>
       </div>
@@ -49,11 +49,11 @@ export function SignupForm() {
             {...register('fullName')}
             id="fullName"
             placeholder="Juan Pérez"
-            className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950 dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-300"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             disabled={isLoading}
           />
           {errors.fullName && (
-            <p className="text-sm font-medium text-red-500">{errors.fullName.message}</p>
+            <p className="text-sm font-medium text-destructive">{errors.fullName.message}</p>
           )}
         </div>
 
@@ -65,11 +65,11 @@ export function SignupForm() {
             {...register('email')}
             id="email"
             placeholder="nombre@ejemplo.com"
-            className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950 dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-300"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             disabled={isLoading}
           />
           {errors.email && (
-            <p className="text-sm font-medium text-red-500">{errors.email.message}</p>
+            <p className="text-sm font-medium text-destructive">{errors.email.message}</p>
           )}
         </div>
 
@@ -81,23 +81,23 @@ export function SignupForm() {
             {...register('password')}
             id="password"
             type="password"
-            className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950 dark:border-zinc-800 dark:bg-zinc-950 dark:focus:ring-zinc-300"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             disabled={isLoading}
           />
           {errors.password && (
-            <p className="text-sm font-medium text-red-500">{errors.password.message}</p>
+            <p className="text-sm font-medium text-destructive">{errors.password.message}</p>
           )}
         </div>
 
         {error && (
-          <div className="p-3 text-sm font-medium text-white bg-red-500 rounded-md">
+          <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive rounded-md">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 h-10 px-4 py-2 w-full dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90"
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           disabled={isLoading}
         >
           {isLoading ? 'Creando cuenta...' : 'Registrarse'}
@@ -106,7 +106,7 @@ export function SignupForm() {
 
       <div className="text-center text-sm">
         ¿Ya tienes una cuenta?{' '}
-        <Link href="/login" className="underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/login" className="underline hover:text-foreground">
           Inicia sesión
         </Link>
       </div>

@@ -42,21 +42,21 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const hasActiveFilters = !!(search || country || city)
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 py-12">
+    <div className="min-h-screen bg-background py-12">
       <main className="container mx-auto px-4 sm:px-6 flex flex-col gap-8">
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl shadow-black/5 border border-slate-200 dark:border-zinc-800 p-6">
+        <div className="bg-card rounded-2xl shadow-xl shadow-black/5 border border-border p-6">
           <MarketplaceHeader
             count={cards?.length || 0}
             hasActiveFilters={hasActiveFilters}
             userCity={userCity}
           />
-          <hr className="my-4 border-slate-100 dark:border-zinc-800" />
+          <hr className="my-4 border-border" />
           <CardFilters />
         </div>
 
         {error ? (
-          <div className="p-12 text-center bg-white rounded-2xl border-2 border-dashed border-red-100">
-            <p className="text-red-500 font-bold text-lg">Error al conectar con la base de datos.</p>
+          <div className="p-12 text-center bg-card rounded-2xl border-2 border-dashed border-destructive/20">
+            <p className="text-destructive font-bold text-lg">Error al conectar con la base de datos.</p>
           </div>
         ) : cards && cards.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">

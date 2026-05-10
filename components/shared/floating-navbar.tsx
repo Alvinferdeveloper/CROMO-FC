@@ -33,21 +33,21 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
         className={cn(
           "pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-500 border shadow-2xl",
           isScrolled
-            ? "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-slate-200 dark:border-zinc-800 scale-95"
-            : "bg-white dark:bg-zinc-900 border-transparent scale-100"
+            ? "bg-background/80 backdrop-blur-xl border-border scale-95"
+            : "bg-background border-transparent scale-100"
         )}
       >
         {/* ── BRAND / LOGO ── */}
         <Link href="/" className="flex items-center px-3 gap-2 group">
-          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 group-hover:rotate-12 transition-transform">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 group-hover:rotate-12 transition-transform">
             <span className="font-black text-xs">PT</span>
           </div>
-          <span className="hidden sm:inline-block font-black text-sm tracking-tighter text-slate-900 dark:text-white uppercase">
+          <span className="hidden sm:inline-block font-black text-sm tracking-tighter text-foreground uppercase">
             PaniniTrade
           </span>
         </Link>
 
-        <div className="h-6 w-px bg-slate-200 dark:bg-zinc-800 mx-1 hidden md:block" />
+        <div className="h-6 w-px bg-border mx-1 hidden md:block" />
 
         {/* ── DESKTOP NAVIGATION ── */}
         <div className="hidden md:flex items-center gap-1">
@@ -56,7 +56,7 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
           {user && <NavLink href="/my-cards" icon={<Layers className="w-4 h-4" />} label="Mis Cromos" />}
         </div>
 
-        <div className="h-6 w-px bg-slate-200 dark:bg-zinc-800 mx-1" />
+        <div className="h-6 w-px bg-border mx-1" />
 
         {/* ── ACTIONS ── */}
         <div className="flex items-center gap-1.5">
@@ -64,22 +64,22 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
             <>
               <UploadCardModal
                 trigger={
-                  <Button variant="ghost" size="sm" className="rounded-full font-bold gap-2 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10">
+                  <Button variant="ghost" size="sm" className="rounded-full font-bold gap-2 text-primary hover:bg-primary/10">
                     <PlusCircle className="h-4 w-4" strokeWidth={2.5} />
                     <span className="hidden lg:inline">Publicar</span>
                   </Button>
                 }
               />
 
-              <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-zinc-800">
+              <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-accent">
                 <Link href="/profile">
-                  <User className="h-4 w-4 text-slate-600 dark:text-zinc-400" />
+                  <User className="h-4 w-4 text-muted-foreground" />
                 </Link>
               </Button>
 
               <form action={logout}>
-                <Button variant="ghost" size="icon" type="submit" className="rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 group">
-                  <LogOut className="h-4 w-4 text-slate-400 group-hover:text-red-500 transition-colors" />
+                <Button variant="ghost" size="icon" type="submit" className="rounded-full hover:bg-destructive/10 group">
+                  <LogOut className="h-4 w-4 text-muted-foreground group-hover:text-destructive transition-colors" />
                 </Button>
               </form>
             </>
@@ -88,7 +88,7 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
               <Button asChild variant="ghost" size="sm" className="rounded-full font-bold text-xs">
                 <Link href="/login">Entrar</Link>
               </Button>
-              <Button asChild size="sm" className="rounded-full font-black text-xs bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20">
+              <Button asChild size="sm" className="rounded-full font-black text-xs bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
                 <Link href="/signup">Unirse</Link>
               </Button>
             </div>
@@ -113,13 +113,13 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="absolute top-20 left-4 right-4 bg-white dark:bg-zinc-900 rounded-[2rem] border border-slate-200 dark:border-zinc-800 shadow-2xl p-4 pointer-events-auto md:hidden overflow-hidden"
+            className="absolute top-20 left-4 right-4 bg-background rounded-[2rem] border border-border shadow-2xl p-4 pointer-events-auto md:hidden overflow-hidden"
           >
             <div className="grid grid-cols-1 gap-2">
               <MobileNavLink href="/explore" icon={<Home className="w-5 h-4" />} label="Explorar" onClick={() => setIsMobileMenuOpen(false)} />
               <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" onClick={() => setIsMobileMenuOpen(false)} />
               {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" onClick={() => setIsMobileMenuOpen(false)} />}
-              <div className="h-px bg-slate-100 dark:bg-zinc-800 my-2" />
+              <div className="h-px bg-border my-2" />
               <MobileNavLink href="/profile" icon={<User className="w-5 h-4" />} label="Mi Perfil" onClick={() => setIsMobileMenuOpen(false)} />
             </div>
           </motion.div>
@@ -133,7 +133,7 @@ function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, l
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-slate-500 dark:text-zinc-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/5 transition-all"
+      className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all"
     >
       {icon}
       <span>{label}</span>
@@ -146,9 +146,9 @@ function MobileNavLink({ href, icon, label, onClick }: { href: string, icon: Rea
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800 transition-all active:scale-[0.98]"
+      className="flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold text-foreground hover:bg-accent transition-all active:scale-[0.98]"
     >
-      <span className="text-emerald-500">{icon}</span>
+      <span className="text-primary">{icon}</span>
       {label}
     </Link>
   )

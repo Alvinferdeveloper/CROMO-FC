@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\alvin\\Desktop\\panini-trade\\panini-trade\\logs\\.34671b7f4d1e3e13c455d41a16c41cb5e7bcd642-audit.json",
+    "files": [
+        {
+            "date": 1778376732223,
+            "name": "C:\\Users\\alvin\\Desktop\\panini-trade\\panini-trade\\logs\\mcp-puppeteer-2026-05-09.log",
+            "hash": "bc41b3fc9881d3b20003fb45a47b58f8f82a250e457eb7d6bd19bd5412234752"
+        }
+    ],
+    "hashType": "sha256"
+}

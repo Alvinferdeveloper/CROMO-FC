@@ -30,12 +30,12 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl dark:bg-zinc-900">
+    <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl shadow-xl">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Bienvenido de nuevo
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
+        <p className="text-muted-foreground">
           Ingresa tus credenciales para acceder a tu cuenta
         </p>
       </div>
@@ -49,11 +49,11 @@ export function LoginForm() {
             {...register('email')}
             id="email"
             placeholder="nombre@ejemplo.com"
-            className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isLoading}
           />
           {errors.email && (
-            <p className="text-sm font-medium text-red-500">{errors.email.message}</p>
+            <p className="text-sm font-medium text-destructive">{errors.email.message}</p>
           )}
         </div>
 
@@ -65,23 +65,23 @@ export function LoginForm() {
             {...register('password')}
             id="password"
             type="password"
-            className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:ring-offset-zinc-950 dark:placeholder:text-zinc-400 dark:focus-visible:ring-zinc-300"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isLoading}
           />
           {errors.password && (
-            <p className="text-sm font-medium text-red-500">{errors.password.message}</p>
+            <p className="text-sm font-medium text-destructive">{errors.password.message}</p>
           )}
         </div>
 
         {error && (
-          <div className="p-3 text-sm font-medium text-white bg-red-500 rounded-md">
+          <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive rounded-md">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 h-10 px-4 py-2 w-full dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90"
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           disabled={isLoading}
         >
           {isLoading ? 'Cargando...' : 'Iniciar Sesión'}
@@ -90,7 +90,7 @@ export function LoginForm() {
 
       <div className="text-center text-sm">
         ¿No tienes una cuenta?{' '}
-        <Link href="/signup" className="underline hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/signup" className="underline hover:text-foreground">
           Regístrate
         </Link>
       </div>

@@ -17,7 +17,7 @@ export default async function ProfilePage() {
     .single()
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black py-12 px-4">
+    <div className="flex min-h-screen bg-background py-12 px-4">
       <ProfileForm initialData={profile} />
     </div>
   )

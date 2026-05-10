@@ -37,7 +37,7 @@ export default async function Home() {
   }))
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-zinc-950">
+    <div className="flex flex-col min-h-screen bg-background">
       <Hero />
       <TeaserSection cards={formattedTeaser || []} userCity={userProfile?.location_city} />
       <HowItWorks />

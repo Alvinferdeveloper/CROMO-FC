@@ -13,14 +13,14 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
     <main className="relative z-20 container mx-auto px-4 sm:px-6 -mt-16 mb-24">
       <div className="flex flex-col gap-10">
         {/* Enhanced Section Header */}
-        <div className="relative overflow-hidden bg-white dark:bg-zinc-900 p-6 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-slate-100 dark:border-zinc-800">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="relative overflow-hidden bg-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/5 border border-border">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             <div className="space-y-4 max-w-2xl">
               <div className="flex flex-wrap gap-2">
                 {userCity ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-wider">
                     <MapPin className="mr-1 h-3 w-3" /> Zona Activa: {userCity}
                   </span>
                 ) : (
@@ -28,33 +28,33 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
                     <Search className="mr-1 h-3 w-3" /> Tendencias Globales
                   </span>
                 )}
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-wider">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-wider">
                   {cards?.length || 0} publicaciones recientes
                 </span>
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-slate-900 dark:text-white leading-none">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground leading-none">
                   {userCity ? 'Intercambios cerca de ti' : 'Explora el mercado mundial'}
                 </h2>
-                <p className="text-slate-500 dark:text-slate-400 font-medium text-lg max-w-lg leading-relaxed">
+                <p className="text-muted-foreground font-medium text-lg max-w-lg leading-relaxed">
                   Encuentra coleccionistas activos que buscan completar su álbum. La forma más rápida de conseguir tus faltantes.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-zinc-800 pt-6 lg:pt-0 lg:pl-10">
+            <div className="flex flex-col sm:flex-row items-center gap-4 border-t lg:border-t-0 lg:border-l border-border pt-6 lg:pt-0 lg:pl-10">
               <div className="text-center sm:text-left">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Comunidad 2026</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Comunidad 2026</p>
                 <div className="flex -space-x-3 mb-2 justify-center sm:justify-start">
                   {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-[10px]">👤</div>
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[10px]">👤</div>
                   ))}
-                  <div className="w-8 h-8 rounded-full border-2 border-white dark:border-zinc-900 bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white">+99</div>
+                  <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground">+99</div>
                 </div>
-                <p className="text-xs font-bold text-slate-600 dark:text-slate-300 italic">&quot;Completé mi álbum ayer, ¡gracias!&quot;</p>
+                <p className="text-xs font-bold text-muted-foreground italic">&quot;Completé mi álbum ayer, ¡gracias!&quot;</p>
               </div>
-              <Button asChild className="w-full bg-emerald-500 dark:bg-emerald-600 text-emerald-100 dark:text-emerald-300 sm:w-auto rounded-2xl h-14 px-8 font-black shadow-xl shadow-primary/20">
+              <Button asChild className="w-full sm:w-auto rounded-2xl h-14 px-8 font-black shadow-xl shadow-primary/20">
                 <Link href="/explore">
                   Ver todo el mercado <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -71,8 +71,8 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center bg-white/50 dark:bg-zinc-900/50 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-zinc-800">
-            <p className="text-slate-400 font-bold">No hay cromos subidos aún cerca de ti.</p>
+          <div className="py-20 text-center bg-card/50 rounded-[3rem] border-2 border-dashed border-border">
+            <p className="text-muted-foreground font-bold">No hay cromos subidos aún cerca de ti.</p>
           </div>
         )}
 

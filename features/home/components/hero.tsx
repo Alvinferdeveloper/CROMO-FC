@@ -37,7 +37,7 @@ export function Hero() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md px-6">
-          <Button asChild size="lg" className="flex-1 h-14 rounded-2xl text-lg font-black shadow-xl shadow-emerald-500/20">
+          <Button asChild size="lg" className="flex-1 h-14 rounded-2xl text-lg font-black shadow-xl shadow-primary/20">
             <Link href="/explore">
               <Search className="mr-2 h-5 w-5" />
               Explorar Cromos
