@@ -37,19 +37,20 @@ export function TeamSelector({ value, onChange, error }: TeamSelectorProps) {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full h-12 justify-between rounded-xl bg-slate-100 dark:bg-zinc-900 border-transparent hover:bg-slate-200 transition-all font-semibold",
-            error && "border-red-500",
-            !value && "text-slate-400"
+            "w-full h-12 justify-between rounded-xl bg-muted border-transparent hover:bg-accent hover:border-border font-semibold active:scale-[0.97] transition-[transform,background-color,border-color] duration-200",
+            error && "border-red-500 hover:border-red-500",
+            !value && "text-muted-foreground"
           )}
+          style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
         >
           <div className="flex items-center gap-3">
-            <Shield className={cn("h-4 w-4", value ? "text-emerald-500" : "text-slate-400")} />
+            <Shield className={cn("h-4 w-4", value ? "text-primary" : "text-muted-foreground")} />
             {value || "Seleccionar equipo..."}
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 rounded-xl border-slate-200 dark:border-zinc-800 shadow-2xl">
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 rounded-xl border border-border shadow-2xl bg-popover overflow-hidden">
         <Command>
           <CommandInput placeholder="Buscar selección..." className="h-11" />
           <CommandList className="max-h-[300px]">
@@ -63,11 +64,11 @@ export function TeamSelector({ value, onChange, error }: TeamSelectorProps) {
                     onChange(currentValue === value ? "" : team)
                     setOpen(false)
                   }}
-                  className="h-11 cursor-pointer"
+                  className="h-11 cursor-pointer font-medium"
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4 text-emerald-500",
+                      "mr-2 h-4 w-4 text-primary",
                       value === team ? "opacity-100" : "opacity-0"
                     )}
                   />
