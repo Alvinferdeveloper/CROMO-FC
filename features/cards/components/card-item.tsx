@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, ArrowLeftRight, User, Star } from 'lucide-react'
+import { MapPin, ArrowLeftRight, User, Star, Navigation } from 'lucide-react'
 import { Card } from '@/types/card'
 
 interface CardItemProps {
@@ -87,11 +87,22 @@ export function CardItem({ card }: CardItemProps) {
 
           {/* Location pill */}
           {location && (
-            <div className="absolute bottom-3 left-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white/90 w-fit max-w-full">
-              <MapPin className="h-3 w-3 shrink-0 text-emerald-400" />
-              <span className="text-[10px] font-semibold truncate">
-                {location}
-              </span>
+            <div className="absolute bottom-3 left-3 right-3 flex flex-col gap-1 items-start">
+              {card.distance_km !== null && card.distance_km !== undefined && (
+                <div className="px-2 py-1 rounded-lg bg-emerald-500 text-white text-[9px] font-black uppercase tracking-tighter shadow-lg flex items-center gap-1 animate-in fade-in slide-in-from-bottom-1">
+                  <Navigation className="h-2.5 w-2.5 fill-current" />
+                  {card.distance_km < 1
+                    ? 'A menos de 1 km'
+                    : `A ${card.distance_km.toFixed(1)} km de ti`
+                  }
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white/90 w-fit max-w-full">
+                <MapPin className="h-3 w-3 shrink-0 text-emerald-400" />
+                <span className="text-[10px] font-semibold truncate">
+                  {location}
+                </span>
+              </div>
             </div>
           )}
         </div>
