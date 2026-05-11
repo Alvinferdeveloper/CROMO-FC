@@ -238,14 +238,14 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5 group">
-                <label className="text-xs font-bold text-muted-foreground">
-                  Número
+                <label className="text-xs font-bold text-muted-foreground flex justify-between">
+                  N° de Cromo <span className="text-[9px] font-medium opacity-60">(Álbum)</span>
                 </label>
                 <div className="relative">
                   <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
                   <input
                     {...register('cardNumber')}
-                    placeholder="#10"
+                    placeholder="Ej: ARG 10 o 542"
                     className="w-full h-12 pl-10 pr-4 rounded-xl bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70"
                   />
                 </div>

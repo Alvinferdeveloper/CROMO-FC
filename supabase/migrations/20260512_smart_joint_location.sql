@@ -6,7 +6,7 @@ DROP FUNCTION IF EXISTS public.get_smart_teaser(text, text, float8, float8, int4
 DROP FUNCTION IF EXISTS public.get_advanced_market_cards(text, text, text, text, public.card_rarity, float8, float8, int4, int4);
 DROP FUNCTION IF EXISTS public.get_advanced_market_cards(text, text, text, text, public.card_rarity, float8, float8, text, text, int4, int4);
 
--- 3. Recrear Búsqueda Avanzada con Inteligencia de Cercanía Real
+-- 3. Recrear Búsqueda Avanzada (CORREGIDA para incluir número de cromo)
 CREATE OR REPLACE FUNCTION public.get_advanced_market_cards(
   p_search TEXT DEFAULT NULL,
   p_country TEXT DEFAULT NULL,
@@ -70,7 +70,12 @@ BEGIN
   FROM public.card_posts cp
   LEFT JOIN public.profiles p ON cp.user_id = p.id
   WHERE cp.is_available = true
-    AND (p_search IS NULL OR cp.player_name ILIKE '%' || p_search || '%' OR cp.team_name ILIKE '%' || p_search || '%')
+    AND (
+      p_search IS NULL 
+      OR cp.player_name ILIKE '%' || p_search || '%' 
+      OR cp.team_name ILIKE '%' || p_search || '%'
+      OR cp.card_number ILIKE '%' || p_search || '%' -- FIX: Search by sticker number
+    )
     AND (p_country IS NULL OR cp.country ILIKE '%' || p_country || '%')
     AND (p_city IS NULL OR cp.location_city ILIKE '%' || p_city || '%')
     AND (p_team IS NULL OR cp.team_name ILIKE '%' || p_team || '%')
