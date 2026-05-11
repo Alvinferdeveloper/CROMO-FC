@@ -26,12 +26,12 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const params = await searchParams
   const supabase = await createClient()
 
-  // Get user profile for location fallback
+  // 1. Get user profile for location fallback
   const { data: { user } } = await supabase.auth.getUser()
   let userProfile = null
   if (user) {
     const { data } = await supabase.from('profiles')
-      .select('location_lat, location_lng')
+      .select('location_city, country, location_lat, location_lng')
       .eq('id', user.id)
       .single()
     userProfile = data
@@ -40,8 +40,8 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const activeLat = params.lat ? parseFloat(params.lat) : userProfile?.location_lat
   const activeLng = params.lng ? parseFloat(params.lng) : userProfile?.location_lng
 
-  // Fetch initial batch (first 12 cards)
-  const { data: initialCards } = await supabase.rpc('get_advanced_market_cards', {
+  // 2. Fetch initial batch (first 12 cards) using the intelligent RPC
+  const { data: initialCards, error: rpcError } = await supabase.rpc('get_advanced_market_cards', {
     p_search: params.search || null,
     p_country: params.country || null,
     p_city: params.city || null,
@@ -49,11 +49,17 @@ export default async function ExplorePage({ searchParams }: PageProps) {
     p_rarity: (params.rarity as any) || null,
     p_user_lat: activeLat || null,
     p_user_lng: activeLng || null,
+    p_user_city: userProfile?.location_city || null,
+    p_user_country: userProfile?.country || null,
     p_limit: 12,
     p_offset: 0
   })
 
-  // Format initial data
+  if (rpcError) {
+    console.error("Error en RPC get_advanced_market_cards:", rpcError)
+  }
+
+  // 3. Format initial data for CardItem compatibility
   const formattedInitial: Card[] = initialCards?.map((card: any) => ({
     ...card,
     profiles: {
@@ -62,14 +68,15 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   })) || []
 
   const isNearbyActive = !!(activeLat && activeLng)
-  const isGPSActive = !!(params.lat && params.lng)
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] mt-20 bg-background overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-64px)] mt-20 bg-background overflow-hidden font-sans">
       <div className="max-w-[1440px] w-full mx-auto px-2 sm:px-4 flex-1 flex flex-col pt-6 min-h-0">
+
+        {/* Top search & GPS header */}
         <ExploreSearchHeader />
 
-        <div className="flex-1 flex gap-8 overflow-hidden min-h-0">
+        <div className="flex-1 flex gap-8 overflow-hidden min-h-0 mt-4">
           {/* Left Column: Fixed Filters */}
           <div className="hidden lg:block w-64 overflow-y-auto pb-10 custom-scrollbar pr-2 pt-1">
             <ExploreFilters />
@@ -80,32 +87,37 @@ export default async function ExplorePage({ searchParams }: PageProps) {
             <div className="space-y-5 max-w-6xl mx-auto pb-20">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold tracking-tight text-foreground">Mercado de cromos</h2>
-                  <p className="text-xs text-muted-foreground font-medium mt-0.5">Encuentra tu próximo intercambio</p>
+                  <h2 className="text-lg font-bold text-foreground uppercase tracking-widest text-[11px]">
+                    Mercado de cromos
+                  </h2>
+                  <h3 className="text-2xl font-black tracking-tighter">Encuentra tu próximo intercambio</h3>
                 </div>
 
                 {isNearbyActive && (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-[11px] font-medium border border-primary/20">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase border border-emerald-500/20">
                     <MapPin className="h-3 w-3" />
-                    GPS activo
+                    Priorizando cercanía
                   </div>
                 )}
               </div>
 
               {isNearbyActive && (
-                <div className="p-3.5 rounded-xl bg-accent/60 border border-border flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-                  <Info className="h-4 w-4 text-primary shrink-0" />
-                  <p className="text-xs text-muted-foreground font-medium">
-                    Resultados ordenados por cercanía a tu ubicación.
+                <div className="p-3.5 rounded-xl bg-blue-500/5 border border-blue-200/50 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
+                  <Info className="h-4 w-4 text-blue-500 shrink-0" />
+                  <p className="text-[11px] text-blue-800 font-bold uppercase tracking-tight">
+                    Los resultados están ordenados por relevancia geográfica a tu perfil.
                   </p>
                 </div>
               )}
 
+              {/* The dynamic infinite scroll feed */}
               <InfiniteExploreFeed
                 initialCards={formattedInitial}
                 searchParams={params}
                 activeLat={activeLat}
                 activeLng={activeLng}
+                userCity={userProfile?.location_city}
+                userCountry={userProfile?.country}
               />
             </div>
           </div>

@@ -13,9 +13,11 @@ interface InfiniteExploreFeedProps {
   searchParams: any
   activeLat?: number | null
   activeLng?: number | null
+  userCity?: string | null
+  userCountry?: string | null
 }
 
-export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, activeLng }: InfiniteExploreFeedProps) {
+export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, activeLng, userCity, userCountry }: InfiniteExploreFeedProps) {
   const [cards, setCards] = useState<Card[]>(initialCards)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
@@ -47,6 +49,8 @@ export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, act
         rarity: searchParams.rarity,
         lat: activeLat,
         lng: activeLng,
+        userCity: userCity,
+        userCountry: userCountry,
         page,
         pageSize: 12
       })
