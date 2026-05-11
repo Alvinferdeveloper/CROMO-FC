@@ -13,7 +13,7 @@ export async function updateProfile(values: ProfileValues) {
   const validatedFields = profileSchema.safeParse(values)
   if (!validatedFields.success) return { error: 'Datos inválidos' }
 
-  const { fullName, whatsapp, instagram, locationCity, country } = validatedFields.data
+  const { fullName, whatsapp, instagram, locationCity, country, lat, lng } = validatedFields.data
 
   const { error } = await supabase
     .from('profiles')
@@ -21,6 +21,8 @@ export async function updateProfile(values: ProfileValues) {
       full_name: fullName,
       location_city: locationCity,
       country: country,
+      location_lat: lat,
+      location_lng: lng,
       contact_methods: {
         whatsapp,
         instagram,

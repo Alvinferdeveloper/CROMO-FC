@@ -26,15 +26,29 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const params = await searchParams
   const supabase = await createClient()
 
+  // Get user profile for location fallback
+  const { data: { user } } = await supabase.auth.getUser()
+  let userProfile = null
+  if (user) {
+    const { data } = await supabase.from('profiles')
+      .select('location_lat, location_lng')
+      .eq('id', user.id)
+      .single()
+    userProfile = data
+  }
+
+  const activeLat = params.lat ? parseFloat(params.lat) : userProfile?.location_lat
+  const activeLng = params.lng ? parseFloat(params.lng) : userProfile?.location_lng
+
   // Fetch initial batch (first 12 cards)
   const { data: initialCards } = await supabase.rpc('get_advanced_market_cards', {
     p_search: params.search || null,
     p_country: params.country || null,
     p_city: params.city || null,
     p_team: params.team || null,
-    p_rarity: params.rarity || null,
-    p_user_lat: params.lat ? parseFloat(params.lat) : null,
-    p_user_lng: params.lng ? parseFloat(params.lng) : null,
+    p_rarity: (params.rarity as any) || null,
+    p_user_lat: activeLat || null,
+    p_user_lng: activeLng || null,
     p_limit: 12,
     p_offset: 0
   })
@@ -47,7 +61,8 @@ export default async function ExplorePage({ searchParams }: PageProps) {
     }
   })) || []
 
-  const isNearbyActive = !!(params.lat && params.lng)
+  const isNearbyActive = !!(activeLat && activeLng)
+  const isGPSActive = !!(params.lat && params.lng)
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] mt-20 bg-background overflow-hidden">
@@ -89,6 +104,8 @@ export default async function ExplorePage({ searchParams }: PageProps) {
               <InfiniteExploreFeed
                 initialCards={formattedInitial}
                 searchParams={params}
+                activeLat={activeLat}
+                activeLng={activeLng}
               />
             </div>
           </div>

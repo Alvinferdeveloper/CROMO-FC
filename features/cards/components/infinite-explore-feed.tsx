@@ -11,9 +11,11 @@ import { Card } from '@/types/card'
 interface InfiniteExploreFeedProps {
   initialCards: Card[]
   searchParams: any
+  activeLat?: number | null
+  activeLng?: number | null
 }
 
-export function InfiniteExploreFeed({ initialCards, searchParams }: InfiniteExploreFeedProps) {
+export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, activeLng }: InfiniteExploreFeedProps) {
   const [cards, setCards] = useState<Card[]>(initialCards)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
@@ -43,8 +45,8 @@ export function InfiniteExploreFeed({ initialCards, searchParams }: InfiniteExpl
       const nextCards = await getExploreCards({
         ...searchParams,
         rarity: searchParams.rarity,
-        lat: searchParams.lat ? parseFloat(searchParams.lat) : null,
-        lng: searchParams.lng ? parseFloat(searchParams.lng) : null,
+        lat: activeLat,
+        lng: activeLng,
         page,
         pageSize: 12
       })
