@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { ProfileForm } from '@/features/profile/components/profile-form'
+import { AvatarUpload } from '@/features/profile/components/avatar-upload'
 import { redirect } from 'next/navigation'
-import Image from 'next/image'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
@@ -24,7 +24,7 @@ export default async function ProfilePage() {
   const today = format(new Date(), "EEEE, dd MMMM yyyy", { locale: es } as any)
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-zinc-950 pt-24 pb-20">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-zinc-950 pt-24 pb-20 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
@@ -48,15 +48,7 @@ export default async function ProfilePage() {
           <div className="px-8 pb-12">
             {/* Avatar & Basic Info Overlay */}
             <div className="flex flex-col md:flex-row items-end gap-6 -mt-16 mb-12 relative z-10">
-              <div className="w-32 h-32 rounded-full border-4 border-white dark:border-zinc-900 bg-slate-100 dark:bg-zinc-800 shadow-xl overflow-hidden relative group">
-                {avatarUrl ? (
-                  <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 dark:bg-zinc-800">
-                    👤
-                  </div>
-                )}
-              </div>
+              <AvatarUpload userId={user.id} initialUrl={avatarUrl} />
               
               <div className="flex-1 pb-2">
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
