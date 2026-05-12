@@ -15,4 +15,9 @@ export const cardSchema = z.object({
   image: z.any().refine((file) => file instanceof File, 'La imagen es requerida'),
 })
 
+export const updateCardSchema = cardSchema.extend({
+  image: z.any().optional(),
+})
+
 export type CardValues = z.infer<typeof cardSchema>
+export type UpdateCardValues = z.infer<typeof updateCardSchema>

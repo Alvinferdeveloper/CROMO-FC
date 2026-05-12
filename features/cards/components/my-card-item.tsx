@@ -6,9 +6,11 @@ import { Trash2, CheckCircle2, RefreshCcw } from 'lucide-react'
 import { toggleCardAvailability, deleteCardPost } from '../actions/card-actions'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { EditCardModal } from './edit-card-modal'
+import { Card } from '@/types/card'
 
 interface MyCardItemProps {
-  card: any
+  card: Card
 }
 
 export function MyCardItem({ card }: MyCardItemProps) {
@@ -61,7 +63,7 @@ export function MyCardItem({ card }: MyCardItemProps) {
           <Button
             variant={card.is_available ? "outline" : "default"}
             size="sm"
-            className="flex-1 rounded-xl h-10"
+            className="flex-1 rounded-xl h-10 font-bold cursor-pointer"
             onClick={handleToggle}
             disabled={isLoading}
           >
@@ -71,10 +73,13 @@ export function MyCardItem({ card }: MyCardItemProps) {
               <><RefreshCcw className="mr-2 h-4 w-4" /> Reactivar</>
             )}
           </Button>
+
+          <EditCardModal card={card} />
+
           <Button
             variant="destructive"
             size="icon"
-            className="rounded-xl h-10 w-10 shrink-0"
+            className="rounded-xl h-10 w-10 shrink-0 cursor-pointer"
             onClick={handleDelete}
             disabled={isLoading}
           >
