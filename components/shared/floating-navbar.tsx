@@ -8,12 +8,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { logout } from '@/features/auth/actions/auth-actions'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 interface FloatingNavbarProps {
   user: any
+  avatarUrl?: string | null
 }
 
-export function FloatingNavbar({ user }: FloatingNavbarProps) {
+export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -71,9 +73,13 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
                 }
               />
 
-              <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-accent">
+              <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-accent overflow-hidden">
                 <Link href="/profile">
-                  <User className="h-4 w-4 text-muted-foreground" />
+                  {avatarUrl ? (
+                    <Image src={avatarUrl} alt="Avatar" width={24} height={24} className="rounded-full object-cover" />
+                  ) : (
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  )}
                 </Link>
               </Button>
 
@@ -120,7 +126,20 @@ export function FloatingNavbar({ user }: FloatingNavbarProps) {
               <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" onClick={() => setIsMobileMenuOpen(false)} />
               {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" onClick={() => setIsMobileMenuOpen(false)} />}
               <div className="h-px bg-border my-2" />
-              <MobileNavLink href="/profile" icon={<User className="w-5 h-4" />} label="Mi Perfil" onClick={() => setIsMobileMenuOpen(false)} />
+              <MobileNavLink 
+                href="/profile" 
+                icon={
+                  avatarUrl ? (
+                    <div className="relative w-5 h-5 rounded-full overflow-hidden border border-primary/20">
+                      <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
+                    </div>
+                  ) : (
+                    <User className="w-5 h-4" />
+                  )
+                } 
+                label="Mi Perfil" 
+                onClick={() => setIsMobileMenuOpen(false)} 
+              />
             </div>
           </motion.div>
         )}
