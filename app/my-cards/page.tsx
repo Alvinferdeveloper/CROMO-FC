@@ -1,11 +1,12 @@
 import { createClient } from '@/lib/supabase-server'
-import { MyCardItem } from '@/features/cards/components/my-card-item'
 import { redirect } from 'next/navigation'
 import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
 import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { MyCardsInfiniteFeed } from '@/features/cards/components/my-cards-infinite-feed'
+import { Card } from '@/types/card'
 
 export default async function MyCardsPage() {
   const supabase = await createClient()
@@ -13,11 +14,13 @@ export default async function MyCardsPage() {
 
   if (!user) redirect('/login')
 
-  const { data: cards } = await supabase
+  // Initial fetch using same logic as infinite feed
+  const { data: initialCards } = await supabase
     .from('card_posts')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+    .range(0, 11) // First 12 items
 
   const today = (format as any)(new Date(), "EEEE, dd MMMM yyyy", { locale: es })
 
@@ -43,33 +46,29 @@ export default async function MyCardsPage() {
           />
         </div>
 
-        {/* Dashboard Card Container */}
-        <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm border border-slate-200/60 dark:border-zinc-800 overflow-hidden">
-          <div className="p-8">
-            {cards && cards.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {cards.map((card: any) => (
-                  <MyCardItem key={card.id} card={card} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-20 text-center">
-                <span className="text-6xl mb-6 block">🃏</span>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No has subido nada aún</h3>
-                <p className="text-slate-500 dark:text-zinc-400 mb-8 max-w-xs mx-auto font-medium">
-                  Empieza a publicar tus repetidas para que otros coleccionistas puedan encontrarte e intercambiar.
-                </p>
-                <UploadCardModal
-                  trigger={
-                    <Button size="lg" className="h-14 px-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-zinc-900 font-bold shadow-xl active:scale-95 transition-all cursor-pointer">
-                      Publicar mi primer cromo
-                    </Button>
-                  }
-                />
-              </div>
-            )}
+        {/* Dashboard Feed Area */}
+        {initialCards && initialCards.length > 0 ? (
+          <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm border border-slate-200/60 dark:border-zinc-800 overflow-hidden">
+            <div className="p-8">
+              <MyCardsInfiniteFeed initialCards={initialCards as Card[]} />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm border border-slate-200/60 dark:border-zinc-800 p-20 text-center">
+            <span className="text-6xl mb-6 block">🃏</span>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No has subido nada aún</h3>
+            <p className="text-slate-500 dark:text-zinc-400 mb-8 max-w-xs mx-auto font-medium">
+              Empieza a publicar tus repetidas para que otros coleccionistas puedan encontrarte e intercambiar.
+            </p>
+            <UploadCardModal
+              trigger={
+                <Button size="lg" className="h-14 px-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-zinc-900 font-bold shadow-xl active:scale-95 transition-all cursor-pointer">
+                  Publicar mi primer cromo
+                </Button>
+              }
+            />
+          </div>
+        )}
       </div>
     </div>
   )
