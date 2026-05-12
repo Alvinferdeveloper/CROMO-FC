@@ -80,7 +80,13 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
+    <motion.form 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      onSubmit={handleSubmit(onSubmit)} 
+      className="space-y-12"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
 
         {/* Full Name */}
@@ -200,23 +206,23 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
         </Button>
       </div>
 
-      {/* Messages */}
       <AnimatePresence>
         {message && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className={cn(
-              "fixed bottom-8 right-8 p-4 rounded-xl shadow-2xl border flex items-center gap-3 z-50",
-              message.type === 'success' ? 'bg-white border-emerald-100 text-emerald-800' : 'bg-white border-red-100 text-red-800'
+              "fixed bottom-8 right-8 p-4 rounded-xl shadow-2xl border flex items-center gap-3 z-50 bg-white dark:bg-zinc-900",
+              message.type === 'success' ? 'border-emerald-100 text-emerald-800' : 'border-red-100 text-red-800'
             )}
           >
-            <div className={cn("w-2 h-2 rounded-full", message.type === 'success' ? 'bg-emerald-500' : 'bg-red-500')} />
+            <div className={cn("w-2.5 h-2.5 rounded-full", message.type === 'success' ? 'bg-emerald-500' : 'bg-red-500')} />
             <p className="text-sm font-bold">{message.text}</p>
           </motion.div>
         )}
       </AnimatePresence>
-    </form>
+    </motion.form>
   )
 }

@@ -19,6 +19,8 @@ export default async function ProfilePage() {
     .eq('id', user.id)
     .single()
 
+  const avatarUrl = profile?.avatar_url || user.user_metadata?.avatar_url
+  const fullName = profile?.full_name || user.user_metadata?.full_name || 'Coleccionista'
   const today = format(new Date(), "EEEE, dd MMMM yyyy", { locale: es } as any)
 
   return (
@@ -28,7 +30,7 @@ export default async function ProfilePage() {
         {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            Bienvenido, {profile?.full_name?.split(' ')[0] || 'Coleccionista'}
+            Bienvenido, {fullName.split(' ')[0]}
           </h1>
           <p className="text-sm text-slate-500 dark:text-zinc-400 font-medium capitalize">
             {today}
@@ -47,8 +49,8 @@ export default async function ProfilePage() {
             {/* Avatar & Basic Info Overlay */}
             <div className="flex flex-col md:flex-row items-end gap-6 -mt-16 mb-12 relative z-10">
               <div className="w-32 h-32 rounded-full border-4 border-white dark:border-zinc-900 bg-slate-100 dark:bg-zinc-800 shadow-xl overflow-hidden relative group">
-                {profile?.avatar_url ? (
-                  <Image src={profile.avatar_url} alt="Avatar" fill className="object-cover" />
+                {avatarUrl ? (
+                  <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 dark:bg-zinc-800">
                     👤
@@ -58,7 +60,7 @@ export default async function ProfilePage() {
               
               <div className="flex-1 pb-2">
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  {profile?.full_name || 'Nuevo Miembro'}
+                  {fullName}
                 </h2>
                 <p className="text-slate-500 dark:text-zinc-400 font-medium">
                   {user.email}
@@ -67,7 +69,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Form Area */}
-            <ProfileForm initialData={profile} />
+            <ProfileForm initialData={{ ...profile, avatar_url: avatarUrl, full_name: fullName, email: user.email }} />
           </div>
         </div>
       </div>
