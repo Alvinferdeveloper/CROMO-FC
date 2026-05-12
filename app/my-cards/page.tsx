@@ -1,10 +1,11 @@
 import { createClient } from '@/lib/supabase-server'
 import { MyCardItem } from '@/features/cards/components/my-card-item'
+import { redirect } from 'next/navigation'
+import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
 import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
-import { redirect } from 'next/navigation'
-
-import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 export default async function MyCardsPage() {
   const supabase = await createClient()
@@ -18,17 +19,23 @@ export default async function MyCardsPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
+  const today = (format as any)(new Date(), "EEEE, dd MMMM yyyy", { locale: es })
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-zinc-950 pt-24 pb-20 font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
-            <h1 className="text-4xl font-black tracking-tighter">Mis Cromos</h1>
-            <p className="text-muted-foreground font-medium">Gestiona tu colección y tus intercambios</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Mis Cromos</h1>
+            <p className="text-sm text-slate-500 dark:text-zinc-400 font-medium capitalize">
+              {today}
+            </p>
           </div>
           <UploadCardModal
             trigger={
-              <Button className="rounded-full h-12 px-6 font-bold shadow-lg shadow-primary/20 gap-2">
+              <Button className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/20 gap-2 transition-all active:scale-95 cursor-pointer">
                 <PlusCircle className="h-5 w-5" />
                 Subir nuevo cromo
               </Button>
@@ -36,28 +43,33 @@ export default async function MyCardsPage() {
           />
         </div>
 
-        {cards && cards.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {cards.map((card: any) => (
-              <MyCardItem key={card.id} card={card} />
-            ))}
+        {/* Dashboard Card Container */}
+        <div className="bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm border border-slate-200/60 dark:border-zinc-800 overflow-hidden">
+          <div className="p-8">
+            {cards && cards.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                {cards.map((card: any) => (
+                  <MyCardItem key={card.id} card={card} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-20 text-center">
+                <span className="text-6xl mb-6 block">🃏</span>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No has subido nada aún</h3>
+                <p className="text-slate-500 dark:text-zinc-400 mb-8 max-w-xs mx-auto font-medium">
+                  Empieza a publicar tus repetidas para que otros coleccionistas puedan encontrarte e intercambiar.
+                </p>
+                <UploadCardModal
+                  trigger={
+                    <Button size="lg" className="h-14 px-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-zinc-900 font-bold shadow-xl active:scale-95 transition-all cursor-pointer">
+                      Publicar mi primer cromo
+                    </Button>
+                  }
+                />
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="p-20 text-center bg-muted/20 rounded-[3rem] border-2 border-dashed border-border/50">
-            <span className="text-6xl mb-6 block">🃏</span>
-            <h3 className="text-2xl font-black mb-2">No has subido nada</h3>
-            <p className="text-muted-foreground mb-8 max-w-xs mx-auto font-medium">
-              Empieza a publicar tus repetidas para que otros coleccionistas puedan encontrarte.
-            </p>
-            <UploadCardModal
-              trigger={
-                <Button size="lg" className="rounded-full px-10 h-14 text-lg font-bold">
-                  Publicar mi primer cromo
-                </Button>
-              }
-            />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   )
