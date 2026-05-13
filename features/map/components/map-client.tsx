@@ -14,6 +14,6 @@ const MapView = dynamic(() => import('./map-view'), {
   )
 })
 
-export function MapClient() {
-  return <MapView />
+export function MapClient({ userLocation }: { userLocation?: { lat: number, lng: number } | null }) {
+  return <MapView userLocation={userLocation} />
 }

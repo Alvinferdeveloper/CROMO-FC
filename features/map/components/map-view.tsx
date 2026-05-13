@@ -1,12 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { getCardsForMap } from '../actions/map-actions'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+
+// Helper component to update map view when props change
+function ChangeView({ center, zoom }: { center: [number, number], zoom: number }) {
+  const map = useMap()
+  useEffect(() => {
+    map.setView(center, zoom)
+  }, [center, zoom, map])
+  return null
+}
 
 // Fix for default Leaflet icons in Next.js
 const createCardIcon = (imageUrl: string | null) => {
@@ -28,9 +37,19 @@ const createCardIcon = (imageUrl: string | null) => {
   })
 }
 
-export default function MapView() {
+interface MapViewProps {
+  userLocation?: { lat: number, lng: number } | null
+}
+
+export default function MapView({ userLocation }: MapViewProps) {
   const [cards, setCards] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const defaultCenter: [number, number] = [20, -20]
+  const defaultZoom = 3
+
+  const mapCenter: [number, number] = userLocation ? [userLocation.lat, userLocation.lng] : defaultCenter
+  const mapZoom = userLocation ? 12 : defaultZoom
 
   useEffect(() => {
     async function loadCards() {
@@ -57,11 +76,13 @@ export default function MapView() {
   return (
     <div className="h-full w-full relative">
       <MapContainer
-        center={[20, -20]}
-        zoom={3}
+        center={mapCenter}
+        zoom={mapZoom}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
       >
+        <ChangeView center={mapCenter} zoom={mapZoom} />
+
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -76,10 +97,10 @@ export default function MapView() {
             <Popup className="custom-popup">
               <div className="w-48 space-y-3">
                 <div>
-                  <h3 className="font-bold leading-none">{card.player_name}</h3>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold mt-1">{card.team_name}</p>
+                  <h3 className="font-bold leading-none text-base">{card.player_name}</h3>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold mt-1.5">{card.team_name}</p>
                 </div>
-                <Button asChild size="sm" className="w-full rounded-full h-8 text-xs font-bold">
+                <Button asChild size="sm" className="w-full rounded-full h-9 text-xs font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
                   <Link href={`/cards/${card.id}`}>Ver Detalle</Link>
                 </Button>
               </div>
@@ -87,11 +108,15 @@ export default function MapView() {
           </Marker>
         ))}
       </MapContainer>
+
       {/* Legend Overlay */}
-      <div className="absolute bottom-6 left-6 z-1000 bg-white/90 backdrop-blur-xl p-4 rounded-2xl border shadow-2xl max-w-xs">
-        <h4 className="font-black text-sm mb-1 uppercase tracking-tighter">Descubrimiento Cercano</h4>
-        <p className="text-xs text-muted-foreground leading-snug">
-          Las ubicaciones son aproximadas para proteger la privacidad de los coleccionistas.
+      <div className="absolute bottom-6 left-6 z-1000 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl p-5 rounded-[2rem] border border-slate-100 dark:border-zinc-800 shadow-2xl max-w-xs animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <h4 className="font-black text-xs uppercase tracking-widest text-foreground">Mapa de Intercambio</h4>
+        </div>
+        <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
+          Las ubicaciones son aproximadas para proteger la privacidad. Haz zoom para encontrar coleccionistas en tu barrio.
         </p>
       </div>
     </div>
