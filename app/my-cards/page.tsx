@@ -14,13 +14,14 @@ export default async function MyCardsPage() {
 
   if (!user) redirect('/login')
 
-  // Initial fetch using same logic as infinite feed
+  // Initial fetch: only active cards for the default tab
   const { data: initialCards } = await supabase
     .from('card_posts')
     .select('*')
     .eq('user_id', user.id)
+    .eq('is_available', true)
     .order('created_at', { ascending: false })
-    .range(0, 11) // First 12 items
+    .range(0, 11)
 
   const today = (format as any)(new Date(), "EEEE, dd MMMM yyyy", { locale: es })
 
