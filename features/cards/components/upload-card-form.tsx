@@ -103,6 +103,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
       setError(result.error)
       setIsLoading(false)
     } else {
+      router.refresh()
       if (onSuccess) {
         onSuccess()
       } else {

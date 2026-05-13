@@ -48,6 +48,12 @@ export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) 
   }
 
   useEffect(() => {
+    setCards(initialCards)
+    setPage(1)
+    setHasMore(initialCards.length >= 12)
+  }, [initialCards])
+
+  useEffect(() => {
     if (inView && hasMore && !isLoading) {
       loadMoreCards()
     }
