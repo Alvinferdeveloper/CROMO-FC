@@ -15,12 +15,14 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { CameraCapture } from './camera-capture'
 import { TeamSelector } from './team-selector'
+import { useRouter } from 'next/navigation'
 
 interface UploadCardFormProps {
   onSuccess?: () => void
 }
 
 export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
+  const router = useRouter()
   const [preview, setPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -96,7 +98,11 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
       setError(result.error)
       setIsLoading(false)
     } else {
-      if (onSuccess) onSuccess()
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.push('/my-cards')
+      }
     }
   }
 

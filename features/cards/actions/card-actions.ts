@@ -89,8 +89,9 @@ export async function createCardPost(formData: FormData) {
     return { error: 'Error al guardar el post' }
   }
 
+  revalidatePath('/my-cards')
   revalidatePath('/')
-  redirect('/')
+  return { success: true }
 }
 
 export async function updateCardPost(cardId: string, formData: FormData) {
