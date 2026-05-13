@@ -8,14 +8,19 @@ import { createCardPost } from '../actions/card-actions'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import {
-  MapPin, Camera, Info, Loader2, User, Hash,
-  Flag, Navigation, ArrowLeftRight, CheckCircle2,
-  ImageIcon
+  MapPin, Camera, Loader2, User, Hash,
+  ArrowLeftRight, Sparkles, ImageIcon,
+  CheckCircle2
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CameraCapture } from './camera-capture'
 import { TeamSelector } from './team-selector'
 import { useRouter } from 'next/navigation'
+
+import {
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface UploadCardFormProps {
   onSuccess?: () => void
@@ -107,160 +112,154 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] min-h-[600px]">
 
-        {/* ── Left side: Image capture ── */}
-        <div className="flex flex-col gap-6">
-          <AnimatePresence mode="wait">
-            {isCameraActive ? (
-              <motion.div
-                key="camera"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-100"
-              >
-                <CameraCapture
-                  onCapture={(file) => {
-                    setValue('image', file, { shouldValidate: true })
-                    const reader = new FileReader()
-                    reader.onloadend = () => setPreview(reader.result as string)
-                    reader.readAsDataURL(file)
-                    setIsCameraActive(false)
-                  }}
-                  onClose={() => setIsCameraActive(false)}
-                />
-              </motion.div>
-            ) : (
-              <div
-                className={`relative aspect-4/5 w-full lg:max-w-md mx-auto rounded-[3rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 group
-                  ${preview
-                    ? 'shadow-[0_20px_40px_-15px_rgba(var(--primary),0.15)] border-2 border-primary/50 bg-primary/5'
-                    : 'border-2 border-dashed border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/50'
-                  }
-                  ${errors.image ? 'border-destructive bg-destructive/10' : ''}
-                `}
-                style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-              >
-                {preview ? (
-                  <div className="absolute inset-0 w-full h-full group">
-                    <Image src={preview} alt="Preview" fill className="object-cover" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center backdrop-blur-sm gap-4">
-                      <Button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setIsCameraActive(true); }}
-                        className="rounded-full bg-white text-black hover:bg-white/90 font-bold active:scale-[0.97] transition-transform duration-200"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-                      >
-                        <Camera className="mr-2 h-4 w-4" /> Tomar otra
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                        className="rounded-full bg-white/10 text-white border-white/30 hover:bg-white/20 font-bold active:scale-[0.97] transition-transform duration-200"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-                      >
-                        <ImageIcon className="mr-2 h-4 w-4" /> Subir archivo
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center p-8 flex flex-col items-center justify-center h-full w-full">
-                    <div className="flex gap-4 mb-6">
-                      <div
-                        onClick={(e) => { e.stopPropagation(); setIsCameraActive(true); }}
-                        className="w-16 h-16 rounded-3xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-110 active:scale-[0.97] transition-transform duration-200"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-                      >
-                        <Camera className="h-7 w-7" />
-                      </div>
-                      <div
-                        onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                        className="w-16 h-16 rounded-3xl bg-card text-muted-foreground shadow-md border border-border flex items-center justify-center hover:scale-110 active:scale-[0.97] transition-transform duration-200"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-                      >
-                        <ImageIcon className="h-7 w-7" />
-                      </div>
-                    </div>
-                    <p className="font-bold text-lg text-foreground mb-1">
-                      Sube tu cromo
-                    </p>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Usa la cámara o elige un archivo
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </AnimatePresence>
-
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-          />
-
-          {errors.image && (
-            <p className="text-xs font-bold text-destructive text-center animate-pulse">
-              ⚠️ Tienes que subir la foto del cromo para continuar.
-            </p>
-          )}
-
-          {/* Professional tip box */}
-          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex gap-3.5 max-w-sm mx-auto w-full">
-            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-              <Info className="h-4 w-4 text-amber-500" />
+        {/* ── COLUMNA IZQUIERDA: Contexto e Imagen ── */}
+        <div className="p-6 sm:p-10 lg:p-16 bg-slate-50/50 dark:bg-zinc-900/30 lg:border-r border-slate-100 dark:border-zinc-800">
+          <DialogHeader className="mb-12 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] border border-emerald-500/20 mb-6">
+              Nuevo Intercambio
             </div>
-            <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed font-medium pt-0.5">
-              <strong className="block text-amber-700 dark:text-amber-500 mb-0.5">Tip para un mejor cambio:</strong>
-              Asegúrate de que haya buena luz y evita mostrar objetos de fondo. Las fotos claras se cambian más rápido.
+
+            <DialogTitle className="text-4xl sm:text-5xl font-black tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-linear-to-br from-slate-900 via-slate-800 to-emerald-600 dark:from-white dark:via-zinc-200 dark:to-emerald-400">
+              Publica tu <span className="text-emerald-500 italic">repetida</span>
+            </DialogTitle>
+
+            <div className="h-1 w-12 bg-emerald-500/30 rounded-full mt-6 mb-2 hidden lg:block" />
+
+            <p className="text-sm sm:text-base text-slate-500 dark:text-zinc-400 font-medium max-w-lg mt-4 leading-relaxed">
+              Convierte tus duplicados en <span className="text-slate-900 dark:text-white font-bold">nuevas oportunidades</span>. El álbum no se llenará solo.
             </p>
+          </DialogHeader>
+
+          {/* Photo Capture Section */}
+          <div className="flex flex-col gap-6">
+            <AnimatePresence mode="wait">
+              {isCameraActive ? (
+                <motion.div
+                  key="camera"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-100"
+                >
+                  <CameraCapture
+                    onCapture={(file) => {
+                      setValue('image', file, { shouldValidate: true })
+                      const reader = new FileReader()
+                      reader.onloadend = () => setPreview(reader.result as string)
+                      reader.readAsDataURL(file)
+                      setIsCameraActive(false)
+                    }}
+                    onClose={() => setIsCameraActive(false)}
+                  />
+                </motion.div>
+              ) : (
+                <div
+                  className={`relative aspect-4/5 w-full max-w-sm mx-auto lg:mx-0 rounded-[2.5rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all duration-500 group
+                    ${preview
+                      ? 'shadow-2xl shadow-emerald-500/10 border-2 border-emerald-500/50 bg-emerald-500/5'
+                      : 'border-2 border-dashed border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:border-emerald-500/50'
+                    }
+                    ${errors.image ? 'border-red-500 bg-red-500/5' : ''}
+                  `}
+                >
+                  {preview ? (
+                    <div className="absolute inset-0 w-full h-full group">
+                      <Image src={preview} alt="Preview" fill className="object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center backdrop-blur-sm gap-4">
+                        <Button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setIsCameraActive(true); }}
+                          className="rounded-full bg-white text-black hover:bg-white/90 font-bold active:scale-[0.95] transition-transform"
+                        >
+                          <Camera className="mr-2 h-4 w-4" /> Tomar otra
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                          className="rounded-full bg-white/10 text-white border-white/30 hover:bg-white/20 font-bold active:scale-[0.95] transition-transform"
+                        >
+                          <ImageIcon className="mr-2 h-4 w-4" /> Subir archivo
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-8 flex flex-col items-center justify-center h-full w-full">
+                      <div className="flex gap-4 mb-6">
+                        <div
+                          onClick={(e) => { e.stopPropagation(); setIsCameraActive(true); }}
+                          className="w-14 h-14 rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+                        >
+                          <Camera className="h-6 w-6" />
+                        </div>
+                        <div
+                          onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                          className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 text-slate-400 shadow-md border border-slate-100 dark:border-zinc-700 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+                        >
+                          <ImageIcon className="h-6 w-6" />
+                        </div>
+                      </div>
+                      <p className="font-bold text-slate-900 dark:text-white">Sube la foto</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </AnimatePresence>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+            />
+
+            {errors.image && (
+              <p className="text-[10px] font-black text-red-500 text-center uppercase tracking-widest">
+                La foto es obligatoria
+              </p>
+            )}
           </div>
         </div>
 
-        {/* ── Right side: form ── */}
-        <div className="flex flex-col gap-6">
+        {/* ── COLUMNA DERECHA: Datos del Formulario ── */}
+        <div className="p-6 sm:p-10 lg:p-16 flex flex-col gap-8">
 
           {/* Player Info */}
-          <div className="space-y-4">
-            <div className="space-y-1.5 group">
-              <label className="text-xs font-bold text-muted-foreground flex justify-between">
-                Jugador <span className="text-destructive">*</span>
+          <div className="space-y-6">
+            <div className="space-y-2 group">
+              <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+                Información del Jugador
               </label>
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                 <input
                   {...register('playerName')}
-                  placeholder="Ej: Lionel Messi"
+                  placeholder="Nombre completo del jugador"
                   className={`w-full h-12 pl-11 pr-4 rounded-xl bg-muted border ${errors.playerName ? 'border-destructive focus:border-destructive' : 'border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20'} outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70`}
                 />
               </div>
-              {errors.playerName && <p className="text-[10px] font-bold text-destructive">{errors.playerName.message}</p>}
+              {errors.playerName && <p className="text-[10px] font-bold text-red-500">{errors.playerName.message}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5 group">
-                <label className="text-xs font-bold text-muted-foreground flex justify-between">
-                  N° de Cromo <span className="text-[9px] font-medium opacity-60">(Álbum)</span>
-                </label>
+              <div className="space-y-2 group">
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">N° Cromo</label>
                 <div className="relative">
-                  <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
+                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <input
                     {...register('cardNumber')}
-                    placeholder="Ej: ARG 10 o 542"
+                    placeholder="Ej: ARG 10"
                     className="w-full h-12 pl-10 pr-4 rounded-xl bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5 group">
-                <label className="text-xs font-bold text-muted-foreground flex justify-between">
-                  Equipo <span className="text-destructive">*</span>
-                </label>
+              <div className="space-y-2 group">
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Equipo</label>
                 <Controller
                   name="teamName"
                   control={control}
@@ -272,15 +271,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                     />
                   )}
                 />
-                {errors.teamName && <p className="text-[10px] font-bold text-destructive">{errors.teamName.message}</p>}
               </div>
             </div>
 
-            {/* Rarity Selector */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground">
-                Tipo de cromo / Rareza
-              </label>
+            {/* Rarity */}
+            <div className="space-y-3">
+              <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Rareza / Edición</label>
               <div className="grid grid-cols-4 gap-2">
                 {(['Normal', 'Bronce', 'Plata', 'Oro'] as const).map((r) => {
                   const isActive = watch('rarity') === r || (!watch('rarity') && r === 'Normal')
@@ -306,27 +302,21 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
           </div>
 
           {/* Location */}
-          <div className="p-5 rounded-2xl bg-card border border-border space-y-4">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-muted-foreground" /> Dónde te encuentras
+          <div className="rounded-[2rem] bg-slate-50/50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800 space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
+              <MapPin className="h-3.5 w-3.5" /> Ubicación
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="relative group">
-                <Flag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
-                <input
-                  {...register('country')}
-                  placeholder="País"
-                  className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
-                />
-              </div>
-              <div className="relative group">
-                <Navigation className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
-                <input
-                  {...register('locationCity')}
-                  placeholder="Ciudad / Zona"
-                  className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
-                />
-              </div>
+              <input
+                {...register('country')}
+                placeholder="País"
+                className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
+              />
+              <input
+                {...register('locationCity')}
+                placeholder="Ciudad"
+                className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
+              />
             </div>
 
             <Button
@@ -335,10 +325,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
               onClick={handleGetLocation}
               disabled={isCapturingLocation}
               className={`w-full h-11 rounded-lg font-bold gap-2 border-dashed active:scale-[0.97] transition-[transform,background-color,border-color] duration-200
-                ${capturedLat
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'hover:border-border hover:bg-muted text-muted-foreground'
-                }
+                ${capturedLat ? 'border-primary bg-primary/10 text-primary' : 'hover:border-border hover:bg-muted text-muted-foreground'}
               `}
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             >
@@ -352,48 +339,34 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
             </Button>
           </div>
 
-          {/* Block 3: What are you looking for? */}
-          <div className="p-5 rounded-2xl bg-accent/30 border border-border space-y-3">
-            <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <ArrowLeftRight className="h-4 w-4 text-primary" /> ¿Qué buscas a cambio? <span className="text-destructive">*</span>
+          {/* Trade Info */}
+          <div className="space-y-3">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500 flex items-center gap-2">
+              <ArrowLeftRight className="h-3.5 w-3.5 text-emerald-500" /> ¿Qué buscas a cambio?
             </label>
             <textarea
               {...register('desiredTrade')}
-              placeholder="Ej: Solo cambio por Cristiano Ronaldo, o me faltan 3 del Grupo B..."
+              placeholder="Ej: Solo cambio por Lionel Messi..."
               rows={3}
               className={`w-full p-4 rounded-xl bg-muted border ${errors.desiredTrade ? 'border-destructive' : 'border-transparent focus:border-primary'} focus:bg-background focus:ring-4 focus:ring-primary/10 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-foreground resize-none placeholder:text-muted-foreground/70`}
             />
-            {errors.desiredTrade && <p className="text-[10px] font-bold text-destructive">{errors.desiredTrade.message}</p>}
           </div>
 
-        </div>
-      </div>
+          {/* Action */}
+          <div className="pt-4 mt-auto">
+            <Button
+              type="submit"
+              disabled={isLoading || !imageValue}
+              className="w-full h-16 rounded-2xl cursor-pointer font-bold text-lg shadow-xl shadow-primary/20 active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100 disabled:shadow-none transition-[transform,opacity,box-shadow] duration-200"
+              style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+            >
+              {isLoading ? <Loader2 className="animate-spin mr-2" /> : null}
+              {isLoading ? 'Publicando...' : 'Publicar cromo'}
+            </Button>
 
-      {/* Error handling */}
-      {error && (
-        <div className="p-4 bg-destructive/10 text-destructive rounded-2xl text-sm font-bold border border-destructive/20 flex items-center justify-center gap-2">
-          <span>⚠️</span> {error}
+            {error && <p className="text-center text-xs font-bold text-red-500 mt-4">⚠️ {error}</p>}
+          </div>
         </div>
-      )}
-
-      <div className="pt-4 border-t border-border">
-        <Button
-          type="submit"
-          disabled={isLoading || !imageValue}
-          className="w-full h-16 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100 disabled:shadow-none transition-[transform,opacity,box-shadow] duration-200"
-          style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-        >
-          {isLoading ? (
-            <span className="flex items-center gap-3">
-              <Loader2 className="h-6 w-6 animate-spin" /> Publicando cromo...
-            </span>
-          ) : (
-            'Publicar cromo'
-          )}
-        </Button>
-        <p className="text-center text-xs font-medium text-muted-foreground mt-4">
-          Al publicar, tu cromo será visible para todos los coleccionistas de tu zona.
-        </p>
       </div>
     </form>
   )
