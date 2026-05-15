@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils'
  */
 export function VisualCardDeck() {
   const staticCards = [
-    { id: 1, image_url: '/stickers/hero-1.png', name: 'Legend 1' },
-    { id: 2, image_url: '/stickers/hero-2.png', name: 'Legend 2' },
-    { id: 3, image_url: '/stickers/hero-3.png', name: 'Legend 3' },
-    { id: 4, image_url: '/stickers/hero-4.png', name: 'Legend 4' },
-    { id: 5, image_url: '/stickers/hero-5.png', name: 'Legend 5' },
+    { id: 1, image_url: '/stickers/hero-1.jpg', name: 'Legend 1' },
+    { id: 2, image_url: '/stickers/hero-2.jpg', name: 'Legend 2' },
+    { id: 3, image_url: '/stickers/hero-3.jpg', name: 'Legend 3' },
+    { id: 4, image_url: '/stickers/hero-4.jpg', name: 'Legend 4' },
+    { id: 5, image_url: '/stickers/hero-5.jpg', name: 'Legend 5' },
   ]
 
   const cardStyles = [
@@ -22,7 +22,7 @@ export function VisualCardDeck() {
   ]
 
   return (
-    <div className="relative flex items-center justify-center h-48 md:h-64 w-full mt-8 mb-4 perspective-1000">
+    <div className="relative flex items-center justify-center h-48 md:h-64 w-full mt-2 mb-4 perspective-1000">
       <div className="flex items-center justify-center w-full max-w-lg relative">
         {staticCards.map((card, index) => (
           <div
