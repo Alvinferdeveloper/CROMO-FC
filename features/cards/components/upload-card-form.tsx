@@ -247,6 +247,35 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+
+              <div className="space-y-2 group">
+                <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Equipo</label>
+                <Controller
+                  name="teamName"
+                  control={control}
+                  render={({ field }) => (
+                    <TeamSelector
+                      value={field.value}
+                      onChange={(name, code) => {
+                        field.onChange(name)
+                        // Dynamic prefix: Replace existing prefix or set new one
+                        const currentNum = watch('cardNumber') || ''
+                        // Check if it already starts with a 3-letter code (capital letters)
+                        const prefixRegex = /^[A-Z]{3}\s/
+                        if (prefixRegex.test(currentNum)) {
+                          setValue('cardNumber', currentNum.replace(prefixRegex, `${code} `), { shouldValidate: true })
+                        } else if (!currentNum.trim()) {
+                          setValue('cardNumber', `${code} `, { shouldValidate: true })
+                        } else {
+                          // Prepend if there's text but no prefix
+                          setValue('cardNumber', `${code} ${currentNum.trim()}`, { shouldValidate: true })
+                        }
+                      }}
+                      error={!!errors.teamName}
+                    />
+                  )}
+                />
+              </div>
               <div className="space-y-2 group">
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">N° Cromo</label>
                 <div className="relative">
@@ -258,27 +287,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                   />
                 </div>
               </div>
-
-              <div className="space-y-2 group">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Equipo</label>
-                <Controller
-                  name="teamName"
-                  control={control}
-                  render={({ field }) => (
-                    <TeamSelector
-                      value={field.value}
-                      onChange={field.onChange}
-                      error={!!errors.teamName}
-                    />
-                  )}
-                />
-              </div>
             </div>
 
             {/* Rarity */}
             <div className="space-y-3">
               <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Rareza / Edición</label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-2 mt-2">
                 {(['Normal', 'Bronce', 'Plata', 'Oro'] as const).map((r) => {
                   const isActive = watch('rarity') === r || (!watch('rarity') && r === 'Normal')
                   return (
