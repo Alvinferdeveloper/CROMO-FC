@@ -11,8 +11,10 @@ import InstagramIcon from '@/components/shared/icons/Instagram'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
+import { Profile } from '@/types/card'
+
 interface ProfileFormProps {
-  initialData: any
+  initialData: Profile & { email?: string }
 }
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
@@ -80,11 +82,11 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   }
 
   return (
-    <motion.form 
+    <motion.form
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-      onSubmit={handleSubmit(onSubmit)} 
+      onSubmit={handleSubmit(onSubmit)}
       className="space-y-12"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">

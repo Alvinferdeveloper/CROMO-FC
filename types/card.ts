@@ -7,6 +7,9 @@ export interface Profile {
   avatar_url: string | null;
   location_city: string | null;
   country: string | null;
+  location_lat: number | null;
+  location_lng: number | null;
+  onboarding_completed: boolean;
   contact_methods: {
     whatsapp?: string;
     instagram?: string;

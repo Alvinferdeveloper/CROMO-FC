@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { LayoutWrapper } from "@/components/shared/layout-wrapper";
 import { Navbar } from "@/components/shared/navbar";
 import { Providers } from "@/providers/query-provider";
+import { OnboardingWrapper } from "@/components/shared/onboarding-wrapper";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <Providers>
+          <OnboardingWrapper />
           <LayoutWrapper navbar={<Navbar />}>
             {children}
           </LayoutWrapper>
