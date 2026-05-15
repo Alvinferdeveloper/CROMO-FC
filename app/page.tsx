@@ -3,6 +3,13 @@ import { Hero } from '@/features/home/components/hero'
 import { TeaserSection } from '@/features/home/components/teaser-section'
 import { HowItWorks } from '@/features/home/components/how-it-works'
 import { Card } from '@/types/card'
+import { Metadata } from 'next'
+import { siteConfig } from '@/lib/config'
+
+export const metadata: Metadata = {
+  title: siteConfig.name,
+  description: siteConfig.description,
+}
 
 /**
  * Hybrid Home Page (Landing Page).

@@ -5,6 +5,17 @@ import { ExploreSearchHeader } from '@/features/cards/components/explore-search-
 import { InfiniteExploreFeed } from '@/features/cards/components/infinite-explore-feed'
 import { MapPin, Info } from 'lucide-react'
 import { Card } from '@/types/card'
+import { Metadata } from 'next'
+import { siteConfig } from '@/lib/config'
+
+export const metadata: Metadata = {
+  title: 'Explorar Cromos',
+  description: `Busca e intercambia cromos de fútbol con otros coleccionistas en ${siteConfig.name}. Filtra por equipo, rareza o ubicación.`,
+  openGraph: {
+    title: `Mercado de Cromos | ${siteConfig.name}`,
+    description: `Encuentra los cromos que te faltan para completar tu álbum en ${siteConfig.name}.`,
+  },
+}
 
 interface PageProps {
   searchParams: Promise<{

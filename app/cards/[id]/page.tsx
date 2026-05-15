@@ -10,9 +10,44 @@ import {
 import InstagramIcon from '@/components/shared/icons/Instagram'
 import Link from 'next/link'
 import { MiniMapClient } from '@/features/cards/components/mini-map-client'
+import { Metadata } from 'next'
+import { siteConfig } from '@/lib/config'
 
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const { data: card } = await supabase
+    .from('card_posts')
+    .select('player_name, team_name, image_url, description')
+    .eq('id', id)
+    .single()
+
+  if (!card) return {}
+
+  const title = `${card.player_name} (${card.team_name})`
+  const description = card.description || `Intercambia el cromo de ${card.player_name} del equipo ${card.team_name} en ${siteConfig.name}.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: card.image_url ? [card.image_url] : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | ${siteConfig.name}`,
+      description,
+      images: card.image_url ? [card.image_url] : [],
+    },
+  }
 }
 
 export default async function CardDetailPage({ params }: PageProps) {
