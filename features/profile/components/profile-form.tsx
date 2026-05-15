@@ -81,6 +81,11 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     }
   }
 
+  const inputClasses = (hasError: boolean) => cn(
+    "w-full h-11 pl-11 pr-4 rounded-xl bg-muted border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white",
+    hasError ? 'border-destructive focus:border-destructive' : 'border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70'
+  )
+
   return (
     <motion.form
       initial={{ opacity: 0, y: 10 }}
@@ -99,7 +104,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             <input
               {...register('fullName')}
               placeholder="Tu nombre completo"
-              className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-zinc-800/50 border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white"
+              className={inputClasses(!!errors.fullName)}
             />
           </div>
           {errors.fullName && <p className="text-xs text-red-500 font-bold px-2">{errors.fullName.message}</p>}
@@ -113,7 +118,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             <input
               {...register('whatsapp')}
               placeholder="54 9 11 ..."
-              className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-zinc-800/50 border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white"
+              className={inputClasses(!!errors.whatsapp)}
             />
           </div>
         </div>
@@ -126,7 +131,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             <input
               {...register('instagram')}
               placeholder="usuario_sin_@"
-              className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-zinc-800/50 border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white"
+              className={inputClasses(!!errors.instagram)}
             />
           </div>
         </div>
@@ -139,7 +144,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             <input
               {...register('country')}
               placeholder="Ej: Argentina"
-              className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-zinc-800/50 border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white"
+              className={inputClasses(!!errors.country)}
             />
           </div>
         </div>
@@ -152,7 +157,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             <input
               {...register('locationCity')}
               placeholder="Ej: Buenos Aires"
-              className="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-zinc-800/50 border-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 transition-all font-medium text-slate-900 dark:text-white"
+              className={inputClasses(!!errors.locationCity)}
             />
           </div>
         </div>
@@ -201,7 +206,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
         <Button
           type="submit"
           disabled={isLoading}
-          className="h-12 px-10 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-zinc-900 font-bold shadow-lg shadow-slate-900/10 active:scale-95 transition-all"
+          className="h-12 px-10 rounded-xl text-white cursor-pointer dark:text-zinc-900 font-bold shadow-lg shadow-slate-900/10 active:scale-95 transition-all"
         >
           {isLoading ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : null}
           Guardar cambios
