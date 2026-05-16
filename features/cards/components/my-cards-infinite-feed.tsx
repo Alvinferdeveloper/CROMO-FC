@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { MyCardItem } from './my-card-item'
@@ -19,152 +19,103 @@ export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) 
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
   const [isLoading, setIsLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState<string>('available')
-  
-  const { ref, inView } = useInView({
-    threshold: 0,
-    rootMargin: '200px'
-  })
+  const [activeTab, setActiveTab] = useState<'available' | 'traded'>('available')
 
-  const handleTabChange = async (value: string) => {
-    setActiveTab(value)
+  const { ref, inView } = useInView({ threshold: 0, rootMargin: '400px' })
+
+  const loadCards = useCallback(async (tab: 'available' | 'traded', reset = false) => {
     setIsLoading(true)
-    setPage(1)
-    
+    if (reset) setCards([]) // Clear list immediately to show skeletons
     try {
-      const filteredCards = await getMyCards({
-        page: 0,
+      const nextPage = reset ? 1 : page
+      const data = await getMyCards({
+        page: reset ? 0 : page,
         pageSize: 12,
-        isAvailable: value === 'available'
+        isAvailable: tab === 'available'
       })
-      
-      setCards(filteredCards)
-      setHasMore(filteredCards.length >= 12)
+
+      setCards(reset ? data : prev => [...prev, ...data])
+      setHasMore(data.length >= 12)
+      setPage(reset ? 1 : page + 1)
     } catch (error) {
-      console.error('Error filtering cards:', error)
+      console.error(error)
     } finally {
       setIsLoading(false)
     }
+  }, [page])
+
+  const handleTabChange = (value: string) => {
+    const tab = value as 'available' | 'traded'
+    setActiveTab(tab)
+    loadCards(tab, true)
   }
 
-  useEffect(() => {
-    setCards(initialCards)
-    setPage(1)
-    setHasMore(initialCards.length >= 12)
-  }, [initialCards])
+  const handleCardDelete = (cardId: string) => {
+    setCards(prev => prev.filter(card => card.id !== cardId))
+  }
+
+  const handleCardToggle = (cardId: string) => {
+    setCards(prev => prev.filter(card => card.id !== cardId))
+  }
 
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
-      loadMoreCards()
+      loadCards(activeTab)
     }
-  }, [inView, hasMore, isLoading])
-
-  const loadMoreCards = async () => {
-    setIsLoading(true)
-    try {
-      const nextCards = await getMyCards({
-        page,
-        pageSize: 12,
-        isAvailable: activeTab === 'available'
-      })
-
-      if (nextCards.length < 12) {
-        setHasMore(false)
-      }
-
-      setCards(prev => [...prev, ...nextCards])
-      setPage(prev => prev + 1)
-    } catch (error) {
-      console.error('Error loading more cards:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [inView, hasMore, isLoading, activeTab, loadCards])
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-8">
       <Tabs defaultValue="available" onValueChange={handleTabChange} className="w-full">
-        <div className="flex items-center justify-between mb-8">
-          <TabsList className="bg-slate-100 dark:bg-zinc-800 p-1 rounded-2xl h-12">
-            <TabsTrigger 
-              value="available" 
-              className="rounded-xl px-6 font-bold text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-950 data-[state=active]:shadow-sm transition-all"
-            >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <TabsList className="bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl h-12 w-full sm:w-auto">
+            <TabsTrigger value="available" className="rounded-lg px-6 text-xs font-bold transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm">
               Disponibles
             </TabsTrigger>
-            <TabsTrigger 
-              value="traded" 
-              className="rounded-xl px-6 font-bold text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-950 data-[state=active]:shadow-sm transition-all"
-            >
+            <TabsTrigger value="traded" className="rounded-lg px-6 text-xs font-bold transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm">
               Intercambiados
             </TabsTrigger>
           </TabsList>
-          
-          <p className="hidden md:block text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            {cards.length} {activeTab === 'available' ? 'Cromos Activos' : 'Intercambios logrados'}
-          </p>
+          <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2">
+            {cards.length} Resultados encontrados
+          </div>
         </div>
 
-        <TabsContent value={activeTab} className="mt-0 outline-none">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <TabsContent value={activeTab} className="mt-8 outline-none">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             <AnimatePresence mode="popLayout">
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <motion.div
-                    key={`skeleton-${i}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <MyCardSkeleton />
-                  </motion.div>
-                ))
-              ) : (
-                cards.map((card, index) => (
-                  <motion.div
-                    key={card.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 5 }}
-                    transition={{ 
-                      duration: 0.25, 
-                      delay: (index % 12) * 0.04,
-                      ease: [0.23, 1, 0.32, 1] 
-                    }}
-                  >
-                    <MyCardItem card={card} />
-                  </motion.div>
-                ))
-              )}
+              {cards.map((card, index) => (
+                <motion.div
+                  key={card.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                >
+                  <MyCardItem
+                    card={card}
+                    onDelete={handleCardDelete}
+                    onToggle={handleCardToggle}
+                  />
+                </motion.div>
+              ))}
+              {isLoading && Array.from({ length: 5 }).map((_, i) => (
+                <MyCardSkeleton key={`skel-${i}`} />
+              ))}
             </AnimatePresence>
           </div>
 
           {!isLoading && cards.length === 0 && (
-            <div className="py-20 text-center bg-slate-50/50 dark:bg-zinc-800/20 rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-zinc-800">
-              <span className="text-4xl mb-4 block">🏟️</span>
-              <p className="text-slate-500 font-bold uppercase text-[11px] tracking-widest">
-                {activeTab === 'available' 
-                  ? 'No tienes cromos activos para intercambiar' 
-                  : 'Aún no has marcado ningún cromo como intercambiado'
-                }
-              </p>
-            </div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-24 text-center">
+              <div className="text-4xl mb-4">📭</div>
+              <p className="text-zinc-500 font-medium">No se encontraron cromos en esta categoría.</p>
+            </motion.div>
           )}
         </TabsContent>
       </Tabs>
 
-      <div ref={ref} className="w-full flex justify-center py-10">
-        {hasMore && !isLoading ? (
-          <div className="flex flex-col items-center gap-2">
-            <Loader2 className="h-6 w-6 animate-spin text-primary/30" />
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sincronizando...</p>
-          </div>
-        ) : cards.length > 0 && !isLoading ? (
-          <div className="text-center py-6 opacity-30">
-            <p className="text-[11px] font-black uppercase tracking-widest italic">Estás al día</p>
-          </div>
-        ) : null}
+      <div ref={ref} className="h-20 flex items-center justify-center">
+        {isLoading && <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />}
       </div>
     </div>
   )

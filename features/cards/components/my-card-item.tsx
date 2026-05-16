@@ -1,117 +1,102 @@
 'use client'
 
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Trash2, CheckCircle2, RefreshCcw } from 'lucide-react'
-import { toggleCardAvailability, deleteCardPost } from '../actions/card-actions'
 import { useState } from 'react'
+import Image from 'next/image'
+import { Trash2, CheckCircle2, RefreshCcw, } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/shared/confirm-dialog'
+import { toggleCardAvailability, deleteCardPost } from '../actions/card-actions'
 import { EditCardModal } from './edit-card-modal'
 import { Card } from '@/types/card'
 
 interface MyCardItemProps {
   card: Card
+  onDelete: (cardId: string) => void
+  onToggle: (cardId: string) => void
 }
 
-export function MyCardItem({ card }: MyCardItemProps) {
+export function MyCardItem({ card, onDelete, onToggle }: MyCardItemProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleToggle = async () => {
     setIsLoading(true)
-    await toggleCardAvailability(card.id, card.is_available)
+    const { success } = await toggleCardAvailability(card.id, card.is_available)
+    if (success) {
+      onToggle(card.id)
+    }
     setIsLoading(false)
   }
 
   const handleDelete = async () => {
-    if (confirm('¿Estás seguro de que quieres borrar este cromo?')) {
-      setIsLoading(true)
-      await deleteCardPost(card.id)
-      setIsLoading(false)
+    setIsLoading(true)
+    const { success } = await deleteCardPost(card.id)
+    if (success) {
+      onDelete(card.id)
     }
+    setIsLoading(false)
   }
 
   return (
-    <div className={cn(
-      "group relative flex flex-col bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[1.5rem] overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 dark:hover:shadow-none hover:-translate-y-1",
-      !card.is_available && "opacity-75"
-    )}>
+    <div className="group relative flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
+
       {/* Image Container */}
-      <div className="relative aspect-3/4 overflow-hidden bg-slate-50 dark:bg-zinc-950">
-        {card.image_url ? (
-          <Image
-            src={card.image_url}
-            alt={card.player_name}
-            fill
-            className={cn(
-              "object-cover transition-transform duration-500 group-hover:scale-110",
-              !card.is_available && "grayscale-[0.5] blur-[1px]"
-            )}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-zinc-800">
-            <span className="text-4xl opacity-20">🃏</span>
-          </div>
-        )}
+      <div className="relative aspect-4/5 bg-zinc-100 dark:bg-zinc-950">
+        <Image
+          src={card.image_url || '/placeholder.png'}
+          alt={card.player_name}
+          fill
+          className={cn("object-cover transition-transform duration-500 group-hover:scale-105", !card.is_available && "grayscale opacity-60")}
+        />
 
         {!card.is_available && (
-          <div className="absolute inset-0 bg-zinc-900/40 backdrop-blur-[2px] flex items-center justify-center p-4">
-            <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md text-zinc-900 dark:text-white font-black px-4 py-2 rounded-xl text-[10px] uppercase tracking-widest shadow-2xl border border-white/20">
-              Cromo Intercambiado
-            </div>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
+            <span className="px-3 py-1 bg-white/90 backdrop-blur text-[10px] font-bold text-zinc-900 uppercase rounded-full shadow-sm">
+              Intercambiado
+            </span>
           </div>
         )}
 
-        {/* Floating ID badge */}
-        <div className="absolute top-3 left-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-slate-100 dark:border-zinc-800 px-2 py-1 rounded-lg text-[10px] font-black text-slate-500 dark:text-zinc-400">
-          #{card.card_number || 'S/N'}
+        <div className="absolute top-3 left-3 px-2 py-1 bg-black/50 backdrop-blur-md text-[10px] font-bold text-white rounded-md">
+          #{card.card_number || '00'}
         </div>
       </div>
 
-      {/* Info & Actions */}
-      <div className="p-4 flex-1 flex flex-col gap-4">
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-white truncate leading-tight">
-            {card.player_name}
-          </h3>
-          <p className="text-[11px] text-slate-500 dark:text-zinc-500 font-bold uppercase tracking-wider mt-1 truncate">
-            {card.team_name}
-          </p>
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1">
+        <div className="mb-4">
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-50 truncate">{card.player_name}</h3>
+          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">{card.team_name}</p>
         </div>
 
-        <div className="mt-auto space-y-2">
+        <div className="mt-auto flex flex-col gap-2">
           <Button
             variant={card.is_available ? "outline" : "default"}
             size="sm"
-            className={cn(
-              "w-full h-10 rounded-xl font-bold text-xs gap-2 cursor-pointer transition-all active:scale-95",
-              card.is_available
-                ? "border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800"
-                : "bg-emerald-500 hover:bg-emerald-600 text-white border-none shadow-lg shadow-emerald-500/20"
-            )}
+            className="w-full h-9 cursor-pointer rounded-lg text-xs font-bold"
             onClick={handleToggle}
             disabled={isLoading}
           >
-            {card.is_available ? (
-              <><CheckCircle2 className="h-3.5 w-3.5" /> Marcar listo</>
-            ) : (
-              <><RefreshCcw className="h-3.5 w-3.5" /> Reactivar</>
-            )}
+            {card.is_available ? <><CheckCircle2 className="w-3.5 h-3.5 mr-2" /> Disponible</> : <><RefreshCcw className="w-3.5 h-3.5 mr-2" /> Reactivar</>}
           </Button>
 
           <div className="flex gap-2">
-            <div className="flex-1">
-              <EditCardModal card={card} />
-            </div>
+            <EditCardModal card={card}>
+              <Button variant="ghost" size="sm" className="flex-1 cursor-pointer rounded-lg text-xs">Editar</Button>
+            </EditCardModal>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 cursor-pointer transition-all active:scale-90"
-              onClick={handleDelete}
-              disabled={isLoading}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <ConfirmDialog
+              title="¿Eliminar este cromo?"
+              description="Esta acción no se puede deshacer. Se eliminará permanentemente de tu colección."
+              confirmText="Eliminar"
+              variant="destructive"
+              onConfirm={handleDelete}
+              trigger={
+                <Button variant="ghost" size="icon" className="h-9 w-9 cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              }
+            />
           </div>
         </div>
       </div>
