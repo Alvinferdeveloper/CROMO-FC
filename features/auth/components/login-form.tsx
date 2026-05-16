@@ -57,7 +57,7 @@ export function LoginForm() {
           ¡Bienvenido de nuevo!
         </h1>
         <p className="text-base text-muted-foreground font-medium">
-          Simplifica tus intercambios y mejora tu colección con PaniniTrade.
+          Simplifica tus intercambios y mejora tu colección con CROMO FC.
         </p>
       </div>
 

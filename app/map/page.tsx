@@ -2,7 +2,7 @@ import { MapClient } from '@/features/map/components/map-client'
 import { createClient } from '@/lib/supabase-server'
 
 export const metadata = {
-  title: 'Mapa de Coleccionistas - PaniniTrade 2026',
+  title: 'Mapa de Coleccionistas - CROMO FC 2026',
   description: 'Encuentra cromos disponibles cerca de tu ubicación',
 }
 

@@ -5,17 +5,23 @@ import Link from 'next/link'
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background">
-      
+
       {/* Left Column: Form */}
       <div className="w-full lg:w-[45%] flex flex-col px-6 lg:px-12 xl:px-24">
         {/* Simple Header Logo */}
         <div className="pt-8 pb-4">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="bg-primary text-primary-foreground font-black text-sm px-2 py-1 rounded-md tracking-tighter">
-              PT
+            <div className="relative w-10 h-10 group-hover:rotate-6 transition-transform">
+              <Image
+                src="/images/logo.png"
+                alt="Cromo FC Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
             <span className="font-black text-xl tracking-tighter text-foreground">
-              PANINITRADE
+              CROMO FC
             </span>
           </Link>
         </div>
@@ -35,9 +41,9 @@ export default function LoginPage() {
         <div className="max-w-xl w-full z-10 flex flex-col items-center">
           {/* Custom generated illustration */}
           <div className="relative w-full aspect-square max-w-md mb-12">
-            <Image 
-              src="/illustrations/auth_hero.png" 
-              alt="Trading cards illustration" 
+            <Image
+              src="/illustrations/auth_hero.png"
+              alt="Trading cards illustration"
               fill
               className="object-contain drop-shadow-2xl"
               priority
@@ -46,7 +52,7 @@ export default function LoginPage() {
 
           <div className="text-center space-y-4">
             <h2 className="text-3xl font-black text-emerald-950 dark:text-emerald-50 tracking-tight">
-              Haz que tus intercambios sean fáciles y organizados con PaniniTrade
+              Haz que tus intercambios sean fáciles y organizados con CROMO FC
             </h2>
             <p className="text-emerald-800/80 dark:text-emerald-200/70 font-medium text-lg max-w-md mx-auto">
               Únete a miles de coleccionistas que están intercambiando cromos del Mundial 2026 en tu ciudad.

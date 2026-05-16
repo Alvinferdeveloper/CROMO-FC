@@ -41,11 +41,17 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
       >
         {/* ── BRAND / LOGO ── */}
         <Link href="/" className="flex items-center px-3 gap-2 group">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 group-hover:rotate-12 transition-transform">
-            <span className="font-black text-xs">PT</span>
+          <div className="relative w-10 h-10 group-hover:rotate-6 transition-transform">
+            <Image
+              src="/images/logo.png"
+              alt="Cromo FC Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
           <span className="hidden sm:inline-block font-black text-sm tracking-tighter text-foreground uppercase">
-            PaniniTrade
+            Cromo Fc
           </span>
         </Link>
 
@@ -126,8 +132,8 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
               <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" onClick={() => setIsMobileMenuOpen(false)} />
               {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" onClick={() => setIsMobileMenuOpen(false)} />}
               <div className="h-px bg-border my-2" />
-              <MobileNavLink 
-                href="/profile" 
+              <MobileNavLink
+                href="/profile"
                 icon={
                   avatarUrl ? (
                     <div className="relative w-5 h-5 rounded-full overflow-hidden border border-primary/20">
@@ -136,9 +142,9 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
                   ) : (
                     <User className="w-5 h-4" />
                   )
-                } 
-                label="Mi Perfil" 
-                onClick={() => setIsMobileMenuOpen(false)} 
+                }
+                label="Mi Perfil"
+                onClick={() => setIsMobileMenuOpen(false)}
               />
             </div>
           </motion.div>

@@ -18,7 +18,7 @@ export function LayoutWrapper({ children, navbar }: { children: React.ReactNode,
               <div className="md:col-span-2 space-y-6">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-slate-900 to-emerald-600 dark:from-white dark:to-emerald-400">
-                    PaniniTrade <span className="text-emerald-500 italic">2026</span>
+                    CROMO FC <span className="text-emerald-500 italic">2026</span>
                   </h3>
                   <div className="h-1 w-12 bg-emerald-500/30 rounded-full" />
                 </div>
