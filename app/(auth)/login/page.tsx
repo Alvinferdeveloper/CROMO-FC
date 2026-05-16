@@ -42,7 +42,7 @@ export default function LoginPage() {
           {/* Custom generated illustration */}
           <div className="relative w-full aspect-square max-w-md mb-12">
             <Image
-              src="/illustrations/auth_hero.png"
+              src="/illustrations/auth_hero.jpg"
               alt="Trading cards illustration"
               fill
               className="object-contain drop-shadow-2xl"
