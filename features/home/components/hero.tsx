@@ -1,11 +1,28 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Search, PlusCircle } from 'lucide-react'
 import { VisualCardDeck } from '@/features/cards/components/visual-card-deck'
+import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
 
-const HERO_BG_URL = '/illustrations/bg_illustration.png'
+const HERO_BG_URL = '/illustrations/bg_illustration.jpg'
 
-export function Hero() {
+interface HeroProps {
+  isAuthenticated: boolean
+}
+
+export function Hero({ isAuthenticated }: HeroProps) {
+  const router = useRouter()
+
+  const handleUploadClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault()
+      router.push('/login')
+    }
+  }
+
   return (
     <section
       className="relative flex flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-fixed pt-20 pb-36 px-6"
@@ -39,9 +56,9 @@ export function Hero() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md px-6">
-          <Button 
-            asChild 
-            size="lg" 
+          <Button
+            asChild
+            size="lg"
             className="flex-1 h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 active:scale-[0.97] transition-transform duration-200"
             style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
           >
@@ -50,18 +67,36 @@ export function Hero() {
               Explorar Cromos
             </Link>
           </Button>
-          <Button 
-            asChild 
-            variant="outline" 
-            size="lg" 
-            className="flex-1 h-14 rounded-2xl text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
-            style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-          >
-            <Link href="/upload-card">
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Subir el mío
-            </Link>
-          </Button>
+
+          {isAuthenticated ? (
+            <UploadCardModal
+              trigger={
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-1 h-14 rounded-2xl cursor-pointer text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
+                  style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+                >
+                  <PlusCircle className="mr-2 h-5 w-5" />
+                  Subir el mío
+                </Button>
+              }
+            />
+          ) : (
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="flex-1 h-14 rounded-2xl text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
+              style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+              onClick={handleUploadClick}
+            >
+              <Link href="/login">
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Subir el mío
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

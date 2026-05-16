@@ -47,7 +47,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Hero />
+      <Hero isAuthenticated={!!user} />
       <TeaserSection cards={formattedTeaser} userCity={userProfile?.location_city} />
       <HowItWorks />
     </div>
