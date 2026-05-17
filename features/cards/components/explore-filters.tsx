@@ -17,17 +17,24 @@ export function ExploreFilters() {
   const [city, setCity] = useState(searchParams.get('city') || '')
   const [rarity, setRarity] = useState(searchParams.get('rarity') || '')
 
-  const applyFilters = (newRarity?: string) => {
+  const applyFilters = (overrides: { search?: string, country?: string, city?: string, rarity?: string } = {}) => {
     const params = new URLSearchParams(searchParams.toString())
-    if (search) params.set('search', search)
+    
+    const finalSearch = 'search' in overrides ? overrides.search : search
+    const finalCountry = 'country' in overrides ? overrides.country : country
+    const finalCity = 'city' in overrides ? overrides.city : city
+    const finalRarity = 'rarity' in overrides ? overrides.rarity : rarity
+
+    if (finalSearch) params.set('search', finalSearch)
     else params.delete('search')
-    if (country) params.set('country', country)
+    
+    if (finalCountry) params.set('country', finalCountry)
     else params.delete('country')
-    if (city) params.set('city', city)
+    
+    if (finalCity) params.set('city', finalCity)
     else params.delete('city')
     
-    const r = newRarity !== undefined ? newRarity : rarity
-    if (r) params.set('rarity', r)
+    if (finalRarity) params.set('rarity', finalRarity)
     else params.delete('rarity')
     
     router.push(`/explore?${params.toString()}`)
@@ -36,7 +43,13 @@ export function ExploreFilters() {
   const handleRarityChange = (r: string) => {
     const nextRarity = rarity === r ? '' : r
     setRarity(nextRarity)
-    applyFilters(nextRarity)
+    applyFilters({ rarity: nextRarity })
+  }
+
+  const handleTeamClick = (team: string) => {
+    const nextSearch = search === team ? '' : team
+    setSearch(nextSearch)
+    applyFilters({ search: nextSearch })
   }
 
   return (
@@ -82,7 +95,7 @@ export function ExploreFilters() {
           {TEAMS.map((team, i) => (
             <button 
               key={team}
-              onClick={() => {setSearch(team); applyFilters()}}
+              onClick={() => handleTeamClick(team)}
               className={`px-3 py-1.5 rounded-lg border text-xs font-medium active:scale-[0.96] transition-[transform,border-color,color,background-color] duration-200
                 ${search === team 
                   ? 'border-primary bg-primary/5 text-primary' 
