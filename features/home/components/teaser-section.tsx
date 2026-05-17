@@ -13,14 +13,14 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
   return (
     <section className="relative z-20 max-w-[1440px] mx-auto w-full px-6 sm:px-8 -mt-16 mb-32">
       <div className="flex flex-col gap-12">
-        
+
         {/* Bold Asymmetric Callout Header */}
         <div className="relative overflow-hidden bg-card rounded-[2rem] shadow-xl border border-border group">
           {/* Subtle animated background glow */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity duration-1000 -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/40 rounded-full blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity duration-1000 -translate-y-1/2 translate-x-1/3" />
 
           <div className="relative z-10 flex flex-col md:flex-row">
-            
+
             {/* Left Content Area (70%) */}
             <div className="flex-1 p-8 md:p-12 space-y-6">
               <div className="flex flex-wrap items-center gap-3">
@@ -29,22 +29,26 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
                     <MapPin className="h-3 w-3" /> Zona activa: {userCity}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider">
-                    <Search className="h-3 w-3" /> Tendencias globales
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    <Search className="h-3 w-3" /> Mercado global
                   </span>
                 )}
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent text-foreground text-[11px] font-bold uppercase tracking-wider border border-border">
-                  <Flame className="h-3 w-3 text-orange-500" />
-                  {cards?.length || 0} publicaciones recientes
+                  <Flame className="h-3 w-3 text-primary" />
+                  {cards?.length || 0} publicaciones frescas
                 </span>
               </div>
 
               <div className="space-y-3 max-w-2xl">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1]">
-                  {userCity ? 'El mercado en tu ciudad está activo.' : 'Explora el mercado mundial.'}
+                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+                  {userCity ? (
+                    <>El mercado en <span className="text-primary">{userCity}</span> está en movimiento.</>
+                  ) : (
+                    <>Explora el <span className="text-primary">mercado mundial</span> de coleccionistas.</>
+                  )}
                 </h2>
                 <p className="text-muted-foreground font-medium text-lg md:text-xl leading-relaxed">
-                  Encuentra coleccionistas que buscan completar su álbum. La forma más rápida, segura y moderna de conseguir tus faltantes.
+                  Conecta con otros coleccionistas y completa tu álbum. La forma más <span className="text-foreground font-semibold">rápida, segura y moderna</span> de obtener tus faltantes.
                 </p>
               </div>
             </div>
@@ -53,7 +57,7 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
             <div className="w-full md:w-80 bg-accent/30 border-t md:border-t-0 md:border-l border-border p-8 flex flex-col justify-center gap-6">
               <div>
                 <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <Users className="h-3 w-3" /> Comunidad 2026
+                  <Users className="h-3 w-3 text-primary" /> Comunidad 2026
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
@@ -67,9 +71,9 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
                   </div>
                 </div>
               </div>
-              
-              <Button 
-                asChild 
+
+              <Button
+                asChild
                 className="w-full rounded-2xl h-14 font-semibold text-base shadow-lg shadow-primary/20 active:scale-[0.97] transition-transform duration-200"
                 style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
@@ -78,16 +82,15 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
                 </Link>
               </Button>
             </div>
-            
+
           </div>
         </div>
-
         {/* Cards Grid */}
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
             <h3 className="text-lg font-bold text-foreground tracking-tight">Agregados recientemente</h3>
           </div>
-          
+
           {cards && cards.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               {cards.map((card) => (
@@ -100,7 +103,7 @@ export function TeaserSection({ cards, userCity }: TeaserSectionProps) {
             </div>
           )}
         </div>
-        
+
       </div>
     </section>
   )

@@ -40,7 +40,6 @@ export function Hero({ isAuthenticated }: HeroProps) {
         <div className="space-y-6">
           <h1 className="text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white drop-shadow-2xl m-0">
             COMPLETA TU <br />
-            {/* Removed gradient text, used solid primary color per impeccable rules */}
             <span className="text-emerald-400">
               COLECCIÓN.
             </span>
