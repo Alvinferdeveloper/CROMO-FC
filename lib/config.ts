@@ -1,11 +1,15 @@
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://panini-trade.vercel.app";
+
 export const siteConfig = {
-  name: "Cromo FC", // Nombre por defecto, fácil de cambiar aquí
+  name: "Cromo FC",
   description: "La comunidad de intercambio de cromos más activa. Completa tu álbum de 2026 de forma fácil y segura.",
-  url: process.env.NEXT_PUBLIC_APP_URL || "https://panini-trade.vercel.app",
-  ogImage: "https://panini-trade.vercel.app/og-image.png",
+  url: baseUrl,
+  ogImage: `${baseUrl}/og-image.png`,
   links: {
-    twitter: "https://twitter.com/CromoFc",
-    github: "https://github.com/CromoFc",
+    twitter: "#",
+    github: "#",
+    instagram: "#",
+    discord: "https://discord.gg/JFFpg4xFpu",
   },
   keywords: [
     "panini",

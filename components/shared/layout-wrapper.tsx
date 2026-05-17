@@ -1,6 +1,8 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { siteConfig } from '@/lib/config'
 
 export function LayoutWrapper({ children, navbar }: { children: React.ReactNode, navbar: React.ReactNode }) {
   const pathname = usePathname()
@@ -18,7 +20,7 @@ export function LayoutWrapper({ children, navbar }: { children: React.ReactNode,
               <div className="md:col-span-2 space-y-6">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-slate-900 to-emerald-600 dark:from-white dark:to-emerald-400">
-                    CROMO FC <span className="text-emerald-500 italic">2026</span>
+                    {siteConfig.name.toUpperCase()} <span className="text-emerald-500 italic">2026</span>
                   </h3>
                   <div className="h-1 w-12 bg-emerald-500/30 rounded-full" />
                 </div>
@@ -31,9 +33,9 @@ export function LayoutWrapper({ children, navbar }: { children: React.ReactNode,
               <div className="space-y-6">
                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500">Plataforma</h4>
                 <ul className="space-y-4 text-sm font-bold text-slate-600 dark:text-zinc-300">
-                  <li><a href="/" className="hover:text-emerald-500 transition-colors">Explorar</a></li>
-                  <li><a href="/map" className="hover:text-emerald-500 transition-colors">Mapa</a></li>
-                  <li><a href="/my-cards" className="hover:text-emerald-500 transition-colors">Mis Cromos</a></li>
+                  <li><Link href="/explore" className="hover:text-emerald-500 transition-colors">Explorar</Link></li>
+                  <li><Link href="/map" className="hover:text-emerald-500 transition-colors">Mapa</Link></li>
+                  <li><Link href="/my-cards" className="hover:text-emerald-500 transition-colors">Mis Cromos</Link></li>
                 </ul>
               </div>
 
@@ -41,9 +43,9 @@ export function LayoutWrapper({ children, navbar }: { children: React.ReactNode,
               <div className="space-y-6">
                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500">Comunidad</h4>
                 <ul className="space-y-4 text-sm font-bold text-slate-600 dark:text-zinc-300">
-                  <li><a href="#" className="hover:text-emerald-500 transition-colors">Reglas de Intercambio</a></li>
-                  <li><a href="#" className="hover:text-emerald-500 transition-colors">Soporte</a></li>
-                  <li><a href="#" className="hover:text-emerald-500 transition-colors">Privacidad</a></li>
+                  <li><Link href="/rules" className="hover:text-emerald-500 transition-colors">Reglas de Intercambio</Link></li>
+                  <li><Link href="/support" className="hover:text-emerald-500 transition-colors">Soporte</Link></li>
+                  <li><Link href="/privacy" className="hover:text-emerald-500 transition-colors">Privacidad</Link></li>
                 </ul>
               </div>
             </div>
@@ -54,9 +56,9 @@ export function LayoutWrapper({ children, navbar }: { children: React.ReactNode,
                 © 2026. Hecho para <span className="text-slate-900 dark:text-white italic">coleccionistas reales</span>.
               </p>
               <div className="flex gap-8 text-[11px] font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">
-                <span className="hover:text-emerald-500 cursor-pointer transition-colors">Twitter</span>
-                <span className="hover:text-emerald-500 cursor-pointer transition-colors">Instagram</span>
-                <span className="hover:text-emerald-500 cursor-pointer transition-colors">Discord</span>
+                <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 transition-colors">Twitter</a>
+                <a href={siteConfig.links.instagram || "#"} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 transition-colors">Instagram</a>
+                <a href={siteConfig.links.discord} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 transition-colors">Discord</a>
               </div>
             </div>
           </div>
