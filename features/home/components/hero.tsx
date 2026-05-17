@@ -54,15 +54,15 @@ export function Hero({ isAuthenticated }: HeroProps) {
           <VisualCardDeck />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md px-6">
+        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg px-6">
           <Button
             asChild
             size="lg"
-            className="flex-1 h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 active:scale-[0.97] transition-transform duration-200"
+            className="flex-1 h-auto py-2 sm:py-4 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 active:scale-[0.97] transition-transform duration-200"
             style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
           >
             <Link href="/explore">
-              <Search className="mr-2 h-5 w-5" />
+              <Search className="mr-2 h-6 w-6 sm:h-5 sm:w-5" />
               Explorar Cromos
             </Link>
           </Button>
@@ -73,10 +73,10 @@ export function Hero({ isAuthenticated }: HeroProps) {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="flex-1 h-14 rounded-2xl cursor-pointer text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
+                  className="flex-1 h-auto py-2 sm:py-4 rounded-2xl text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
                   style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
                 >
-                  <PlusCircle className="mr-2 h-5 w-5" />
+                  <PlusCircle className="mr-2 h-6 w-6 sm:h-5 sm:w-5" />
                   Subir el mío
                 </Button>
               }
@@ -86,17 +86,18 @@ export function Hero({ isAuthenticated }: HeroProps) {
               asChild
               variant="outline"
               size="lg"
-              className="flex-1 h-14 rounded-2xl text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
+              className="flex-1 h-auto py-5 sm:py-4 rounded-2xl text-lg font-bold bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm active:scale-[0.97] transition-[transform,background-color] duration-200"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               onClick={handleUploadClick}
             >
               <Link href="/login">
-                <PlusCircle className="mr-2 h-5 w-5" />
+                <PlusCircle className="mr-2 h-6 w-6 sm:h-5 sm:w-5" />
                 Subir el mío
               </Link>
             </Button>
           )}
         </div>
+
       </div>
     </section>
   )
