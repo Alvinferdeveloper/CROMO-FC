@@ -1,12 +1,11 @@
-'use client'
-
+"use client"
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
 import { MapPin, SlidersHorizontal, Globe, Shield } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TEAMS } from '../hooks/use-teams'
 import { TeamSelector } from './team-selector'
+import { useDebounce } from '@/hooks/use-debounce'
 
 const QUICK_TEAMS = ['Argentina', 'México', 'Estados Unidos', 'Brasil', 'España']
 const RARITIES = ['Normal', 'Bronce', 'Plata', 'Oro']
@@ -19,6 +18,10 @@ export function ExploreFilters() {
   const [country, setCountry] = useState(searchParams.get('country') || '')
   const [city, setCity] = useState(searchParams.get('city') || '')
   const [rarity, setRarity] = useState(searchParams.get('rarity') || '')
+
+  // ── DEBOUNCED VALUES ──
+  const debouncedCountry = useDebounce(country, 500)
+  const debouncedCity = useDebounce(city, 500)
 
   const applyFilters = (overrides: { search?: string, country?: string, city?: string, rarity?: string } = {}) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -40,8 +43,18 @@ export function ExploreFilters() {
     if (finalRarity) params.set('rarity', finalRarity)
     else params.delete('rarity')
 
-    router.push(`/explore?${params.toString()}`)
+    router.push(`/explore?${params.toString()}`, { scroll: false })
   }
+
+  // Effect to apply filters when debounced values change
+  useEffect(() => {
+    const currentCountry = searchParams.get('country') || ''
+    const currentCity = searchParams.get('city') || ''
+
+    if (debouncedCountry !== currentCountry || debouncedCity !== currentCity) {
+      applyFilters({ country: debouncedCountry, city: debouncedCity })
+    }
+  }, [debouncedCountry, debouncedCity])
 
   const handleRarityChange = (r: string) => {
     const nextRarity = rarity === r ? '' : r
@@ -62,6 +75,12 @@ export function ExploreFilters() {
           <SlidersHorizontal className="h-4 w-4 text-primary" />
           Filtros
         </h3>
+        <button
+          onClick={() => { setSearch(''); setCountry(''); setCity(''); setRarity(''); router.push('/explore') }}
+          className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-destructive transition-colors"
+        >
+          Limpiar
+        </button>
       </div>
 
       {/* Location Filter */}
@@ -74,7 +93,7 @@ export function ExploreFilters() {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder="Cualquier país"
-              className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40"
+              className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40 font-medium"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             />
           </div>
@@ -84,7 +103,7 @@ export function ExploreFilters() {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Cualquier ciudad"
-              className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40"
+              className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40 font-medium"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             />
           </div>
@@ -108,7 +127,7 @@ export function ExploreFilters() {
 
         {/* Quick Selections */}
         <div className="flex flex-wrap gap-1.5 pt-1">
-          {QUICK_TEAMS.map((team, i) => {
+          {QUICK_TEAMS.map((team) => {
             const teamData = TEAMS.find(t => t.name === team)
             const isSelected = search === team
 
@@ -156,23 +175,6 @@ export function ExploreFilters() {
             </label>
           ))}
         </div>
-      </div>
-
-      <div className="space-y-2 pt-2">
-        <Button
-          onClick={() => applyFilters()}
-          className="w-full h-11 rounded-xl text-sm font-bold active:scale-[0.97] shadow-lg shadow-primary/10 transition-all duration-150"
-          style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-        >
-          Aplicar filtros
-        </Button>
-
-        <button
-          onClick={() => { setSearch(''); setCountry(''); setCity(''); setRarity(''); router.push('/explore') }}
-          className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors duration-150 text-center"
-        >
-          Limpiar todos
-        </button>
       </div>
     </div>
   )
