@@ -49,24 +49,29 @@
 }
 
 :root {
-  --background: oklch(0.985 0.005 235); /* slate-50 approximation */
+  --background: oklch(0.985 0.005 235);
+  /* slate-50 approximation */
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.696 0.17 162.48); /* emerald-500 */
+  --primary: oklch(0.696 0.17 162.48);
+  /* emerald-500 */
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.922 0 0); /* slate-200 */
-  --muted-foreground: oklch(0.45 0 0); /* slate-500 */
+  --muted: oklch(0.922 0 0);
+  /* slate-200 */
+  --muted-foreground: oklch(0.45 0 0);
+  /* slate-500 */
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.696 0.17 162.48); /* emerald-500 */
+  --ring: oklch(0.696 0.17 162.48);
+  /* emerald-500 */
   --chart-1: oklch(0.696 0.17 162.48);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -84,13 +89,15 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0); /* zinc-950 approx */
+  --background: oklch(0.145 0 0);
+  /* zinc-950 approx */
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.696 0.17 162.48); /* emerald-500 */
+  --primary: oklch(0.696 0.17 162.48);
+  /* emerald-500 */
   --primary-foreground: oklch(0.145 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -121,15 +128,17 @@
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.136);
     border-radius: 10px;
   }
+
   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.05);
   }
 }
-
