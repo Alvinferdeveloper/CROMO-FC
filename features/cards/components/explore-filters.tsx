@@ -3,15 +3,18 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { MapPin, SlidersHorizontal, Globe } from 'lucide-react'
+import { MapPin, SlidersHorizontal, Globe, Shield } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { TEAMS } from '../hooks/use-teams'
+import { TeamSelector } from './team-selector'
 
-const TEAMS = ['Argentina', 'México', 'EE.UU.', 'Canadá', 'España']
+const QUICK_TEAMS = ['Argentina', 'México', 'Estados Unidos', 'Brasil', 'España']
 const RARITIES = ['Normal', 'Bronce', 'Plata', 'Oro']
 
 export function ExploreFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [country, setCountry] = useState(searchParams.get('country') || '')
   const [city, setCity] = useState(searchParams.get('city') || '')
@@ -19,7 +22,7 @@ export function ExploreFilters() {
 
   const applyFilters = (overrides: { search?: string, country?: string, city?: string, rarity?: string } = {}) => {
     const params = new URLSearchParams(searchParams.toString())
-    
+
     const finalSearch = 'search' in overrides ? overrides.search : search
     const finalCountry = 'country' in overrides ? overrides.country : country
     const finalCity = 'city' in overrides ? overrides.city : city
@@ -27,16 +30,16 @@ export function ExploreFilters() {
 
     if (finalSearch) params.set('search', finalSearch)
     else params.delete('search')
-    
+
     if (finalCountry) params.set('country', finalCountry)
     else params.delete('country')
-    
+
     if (finalCity) params.set('city', finalCity)
     else params.delete('city')
-    
+
     if (finalRarity) params.set('rarity', finalRarity)
     else params.delete('rarity')
-    
+
     router.push(`/explore?${params.toString()}`)
   }
 
@@ -63,24 +66,24 @@ export function ExploreFilters() {
 
       {/* Location Filter */}
       <div className="space-y-3">
-        <p className="text-xs font-medium text-muted-foreground">Ubicación</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Ubicación</p>
         <div className="space-y-2.5">
           <div className="relative">
             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
-            <input 
+            <input
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              placeholder="Cualquier país" 
+              placeholder="Cualquier país"
               className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             />
           </div>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
-            <input 
+            <input
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="Cualquier ciudad" 
+              placeholder="Cualquier ciudad"
               className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-card text-sm outline-none transition-[box-shadow,border-color] duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 placeholder:text-muted-foreground/40"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             />
@@ -89,43 +92,65 @@ export function ExploreFilters() {
       </div>
 
       {/* Team Filter */}
-      <div className="space-y-3">
-        <p className="text-xs font-medium text-muted-foreground">Selección</p>
-        <div className="flex flex-wrap gap-1.5">
-          {TEAMS.map((team, i) => (
-            <button 
-              key={team}
-              onClick={() => handleTeamClick(team)}
-              className={`px-3 py-1.5 rounded-lg border text-xs font-medium active:scale-[0.96] transition-[transform,border-color,color,background-color] duration-200
-                ${search === team 
-                  ? 'border-primary bg-primary/5 text-primary' 
-                  : 'border-border bg-card hover:border-primary/40 hover:text-primary hover:bg-primary/5'
-                }
-              `}
-              style={{ 
-                transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)',
-                animationDelay: `${i * 40}ms`
-              }}
-            >
-              {team}
-            </button>
-          ))}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selección</p>
+          <Shield className="h-3 w-3 text-muted-foreground/40" />
+        </div>
+
+        {/* Full Team Selector */}
+        <div className="relative z-20">
+          <TeamSelector
+            value={search}
+            onChange={(name) => handleTeamClick(name)}
+          />
+        </div>
+
+        {/* Quick Selections */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {QUICK_TEAMS.map((team, i) => {
+            const teamData = TEAMS.find(t => t.name === team)
+            const isSelected = search === team
+
+            return (
+              <button
+                key={team}
+                onClick={() => handleTeamClick(team)}
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-[11px] font-bold active:scale-[0.96] transition-all duration-200
+                  ${isSelected
+                    ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/5'
+                    : 'border-border bg-card hover:border-primary/40 hover:text-primary hover:bg-primary/5 text-muted-foreground'
+                  }
+                `}
+                style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+              >
+                {teamData && (
+                  <img
+                    src={`https://flagcdn.com/w20/${teamData.iso}.png`}
+                    alt=""
+                    className={cn("w-3.5 h-auto rounded-[1px]", !isSelected && "grayscale opacity-70")}
+                  />
+                )}
+                {team}
+              </button>
+            )
+          })}
         </div>
       </div>
 
       {/* Rarity Filter */}
       <div className="space-y-3">
-        <p className="text-xs font-medium text-muted-foreground">Rareza</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Rareza</p>
         <div className="space-y-2">
           {RARITIES.map((r) => (
             <label key={r} className="flex items-center gap-2.5 cursor-pointer group py-0.5">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={rarity === r}
                 onChange={() => handleRarityChange(r)}
-                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary cursor-pointer" 
+                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30 accent-primary cursor-pointer"
               />
-              <span className={`text-sm font-medium transition-colors duration-150 ${rarity === r ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
+              <span className={`text-sm font-semibold transition-colors duration-150 ${rarity === r ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
                 {r}
               </span>
             </label>
@@ -134,17 +159,17 @@ export function ExploreFilters() {
       </div>
 
       <div className="space-y-2 pt-2">
-        <Button 
-          onClick={() => applyFilters()} 
-          className="w-full h-10 rounded-xl text-sm font-semibold active:scale-[0.97] transition-transform duration-150"
+        <Button
+          onClick={() => applyFilters()}
+          className="w-full h-11 rounded-xl text-sm font-bold active:scale-[0.97] shadow-lg shadow-primary/10 transition-all duration-150"
           style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
         >
           Aplicar filtros
         </Button>
-        
+
         <button
-          onClick={() => {setSearch(''); setCountry(''); setCity(''); setRarity(''); router.push('/explore')}}
-          className="w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-150 text-center"
+          onClick={() => { setSearch(''); setCountry(''); setCity(''); setRarity(''); router.push('/explore') }}
+          className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors duration-150 text-center"
         >
           Limpiar todos
         </button>
