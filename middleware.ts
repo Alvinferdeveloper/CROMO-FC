@@ -53,7 +53,7 @@ export async function updateSession(request: NextRequest) {
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDevelopment ? "'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: *.supabase.co images.unsplash.com picsum.photos lh3.googleusercontent.com *.basemaps.cartocdn.com *.tile.openstreetmap.org *.openstreetmap.org;
+    img-src 'self' blob: data: *.supabase.co images.unsplash.com picsum.photos lh3.googleusercontent.com *.basemaps.cartocdn.com *.tile.openstreetmap.org *.openstreetmap.org flagcdn.com;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
