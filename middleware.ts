@@ -3,7 +3,21 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
-// ── RATE LIMITER CONFIG ──
+const PUBLIC_ROUTES = [
+  '/',
+  '/explore',
+  '/cards/',
+  '/map',
+  '/rules',
+  '/support',
+  '/privacy',
+  '/api/og',
+  '/api/auth',
+  '/auth'
+]
+
+const AUTH_ONLY_ROUTES = ['/login', '/signup']
+
 let ratelimit: Ratelimit | null = null
 
 try {
@@ -16,37 +30,13 @@ try {
     })
   }
 } catch (error) {
-  console.error("Error initializing Ratelimit:", error)
+  console.error("Error al inicializar Ratelimit:", error)
 }
 
-export async function updateSession(request: NextRequest) {
-  // 1. Rate Limiting Check (Optional if configured)
-  if (ratelimit) {
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? "127.0.0.1"
-    try {
-      const { success, limit, reset, remaining } = await ratelimit.limit(ip)
-
-      if (!success) {
-        return new NextResponse("Has excedido el límite de peticiones. Por favor intenta de nuevo en un minuto.", {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": limit.toString(),
-            "X-RateLimit-Remaining": remaining.toString(),
-            "X-RateLimit-Reset": reset.toString(),
-          },
-        })
-      }
-    } catch (error) {
-      console.error("Rate limiting failed, bypassing:", error)
-    }
-  }
-
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
-
-  // 2. SECURITY HEADERS
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+/**
+ * Apply robust security headers to the response.
+ */
+function applySecurityHeaders(response: NextResponse, nonce: string) {
   const isDevelopment = process.env.NODE_ENV === 'development'
 
   const cspHeader = `
@@ -63,57 +53,85 @@ export async function updateSession(request: NextRequest) {
     upgrade-insecure-requests;
   `.replace(/\s{2,}/g, ' ').trim()
 
-  supabaseResponse.headers.set('Content-Security-Policy', cspHeader)
-  supabaseResponse.headers.set('X-DNS-Prefetch-Control', 'on')
-  supabaseResponse.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
-  supabaseResponse.headers.set('X-Frame-Options', 'DENY')
-  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff')
-  supabaseResponse.headers.set('Referrer-Policy', 'origin-when-cross-origin')
-  supabaseResponse.headers.set('Permissions-Policy', 'camera=self, microphone=(), geolocation=self')
+  const headers = response.headers
+  headers.set('Content-Security-Policy', cspHeader)
+  headers.set('X-DNS-Prefetch-Control', 'on')
+  headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
+  headers.set('X-Frame-Options', 'DENY')
+  headers.set('X-Content-Type-Options', 'nosniff')
+  headers.set('Referrer-Policy', 'origin-when-cross-origin')
+  headers.set('Permissions-Policy', 'camera=self, microphone=(), geolocation=self')
+
+  return response
+}
+
+/**
+ * Determines the access type of the current route.
+ */
+function getRouteStatus(path: string) {
+  const isPublic = PUBLIC_ROUTES.some(route => path === route || path.startsWith(route))
+  const isAuthOnly = AUTH_ONLY_ROUTES.some(route => path.startsWith(route))
+  return { isPublic, isAuthOnly }
+}
+
+
+export async function updateSession(request: NextRequest) {
+  const path = request.nextUrl.pathname
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+
+  if (ratelimit) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? "127.0.0.1"
+    try {
+      const { success, limit, reset, remaining } = await ratelimit.limit(ip)
+      if (!success) {
+        return new NextResponse("Has excedido el límite de peticiones. Por favor intenta de nuevo en un minuto.", {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        })
+      }
+    } catch (e) {
+      console.error("Error en Rate Limit:", e)
+    }
+  }
+
+  // Create a base response with security headers
+  let response = applySecurityHeaders(NextResponse.next({ request }), nonce)
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
+        getAll: () => request.cookies.getAll(),
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          // Re-apply headers to the new response
-          supabaseResponse.headers.set('Content-Security-Policy', cspHeader)
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = applySecurityHeaders(NextResponse.next({ request }), nonce)
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
         },
       },
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                     request.nextUrl.pathname.startsWith('/signup')
+  const { isPublic, isAuthOnly } = getRouteStatus(path)
 
-  if (!user && !isAuthPage && !request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/auth') && request.nextUrl.pathname !== '/') {
+  if (!user && !isPublic && !isAuthOnly) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
+    url.searchParams.set('next', path)
     return NextResponse.redirect(url)
   }
 
-  if (user && isAuthPage) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url)
+  if (user && isAuthOnly) {
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
-  return supabaseResponse
+  return response
 }
 
 export async function middleware(request: NextRequest) {
