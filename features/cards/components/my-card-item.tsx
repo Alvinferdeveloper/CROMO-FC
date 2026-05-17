@@ -14,9 +14,10 @@ interface MyCardItemProps {
   card: Card
   onDelete: (cardId: string) => void
   onToggle: (cardId: string) => void
+  onUpdate: (updatedCard: Card) => void
 }
 
-export function MyCardItem({ card, onDelete, onToggle }: MyCardItemProps) {
+export function MyCardItem({ card, onDelete, onToggle, onUpdate }: MyCardItemProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleToggle = async () => {
@@ -81,7 +82,7 @@ export function MyCardItem({ card, onDelete, onToggle }: MyCardItemProps) {
           </Button>
 
           <div className="flex gap-2">
-            <EditCardModal card={card}>
+            <EditCardModal card={card} onSuccess={onUpdate}>
               <Button variant="ghost" size="sm" className="flex-1 cursor-pointer rounded-lg text-xs">Editar</Button>
             </EditCardModal>
 

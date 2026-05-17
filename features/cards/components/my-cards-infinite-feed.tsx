@@ -58,6 +58,19 @@ export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) 
     setCards(prev => prev.filter(card => card.id !== cardId))
   }
 
+  const handleCardUpdate = (updatedCard: Card) => {
+    setCards(prev => prev.map(card => card.id === updatedCard.id ? updatedCard : card))
+  }
+
+  // Sync only if structure changes or initial load, to protect infinite scroll progress
+  useEffect(() => {
+    if (cards.length === 0 || initialCards.length === 0) {
+      setCards(initialCards)
+      setPage(1)
+      setHasMore(initialCards.length >= 12)
+    }
+  }, [initialCards])
+
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
       loadCards(activeTab)
@@ -96,6 +109,7 @@ export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) 
                     card={card}
                     onDelete={handleCardDelete}
                     onToggle={handleCardToggle}
+                    onUpdate={handleCardUpdate}
                   />
                 </motion.div>
               ))}

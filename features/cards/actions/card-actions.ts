@@ -144,18 +144,20 @@ export async function updateCardPost(cardId: string, formData: FormData) {
     }
   }
 
-  const { error } = await supabase
+  const { data: updatedCard, error } = await supabase
     .from('card_posts')
     .update(updateData)
     .eq('id', cardId)
     .eq('user_id', user.id)
+    .select()
+    .single()
 
   if (error) return { error: error.message }
 
   revalidatePath('/my-cards')
   revalidatePath(`/cards/${cardId}`)
   revalidatePath('/')
-  return { success: true }
+  return { success: true, data: updatedCard }
 }
 
 export async function toggleCardAvailability(cardId: string, currentStatus: boolean) {

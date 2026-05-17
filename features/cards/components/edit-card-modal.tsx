@@ -9,19 +9,25 @@ import { Button } from "@/components/ui/button"
 import { Edit3 } from "lucide-react"
 import { EditCardForm } from "./edit-card-form"
 import { useState } from "react"
+import { Card } from "@/types/card"
 
 interface EditCardModalProps {
-  card: any
-  children?: React.ReactNode // <--- Añadimos esto
+  card: Card
+  children?: React.ReactNode
+  onSuccess?: (updatedCard: Card) => void
 }
 
-export function EditCardModal({ card, children }: EditCardModalProps) {
+export function EditCardModal({ card, children, onSuccess }: EditCardModalProps) {
   const [open, setOpen] = useState(false)
+
+  const handleSuccess = (updatedCard: Card) => {
+    setOpen(false)
+    if (onSuccess) onSuccess(updatedCard)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* Si pasas hijos, se usan. Si no, usa el botón por defecto */}
         {children ? (
           children
         ) : (
@@ -38,7 +44,7 @@ export function EditCardModal({ card, children }: EditCardModalProps) {
       <DialogContent className="w-[95vw] sm:w-[90vw] lg:max-w-6xl p-0 bg-white dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden outline-none">
         <div className="absolute top-0 left-0 w-full h-40 bg-linear-to-b from-blue-500/10 via-blue-500/5 to-transparent pointer-events-none z-0" />
         <div className="relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
-          <EditCardForm card={card} onSuccess={() => setOpen(false)} />
+          <EditCardForm card={card} onSuccess={handleSuccess} />
         </div>
       </DialogContent>
     </Dialog>

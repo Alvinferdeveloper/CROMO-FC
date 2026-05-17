@@ -26,7 +26,7 @@ import {
 
 interface EditCardFormProps {
   card: Card
-  onSuccess?: () => void
+  onSuccess?: (updatedCard: Card) => void
 }
 
 const inputClasses = (hasError: boolean) => cn(
@@ -128,7 +128,7 @@ export function EditCardForm({ card, onSuccess }: EditCardFormProps) {
       setIsLoading(false)
     } else {
       router.refresh()
-      if (onSuccess) onSuccess()
+      if (onSuccess && result.data) onSuccess(result.data as Card)
     }
   }
 
