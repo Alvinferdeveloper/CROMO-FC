@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { PlusCircle, User, LogOut, Home, Map, Layers, Menu, X } from 'lucide-react'
 import { UploadCardModal } from '@/features/cards/components/upload-card-modal'
@@ -18,6 +19,7 @@ interface FloatingNavbarProps {
 export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,9 +61,9 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
 
         {/* ── DESKTOP NAVIGATION ── */}
         <div className="hidden md:flex items-center gap-1">
-          <NavLink href="/explore" icon={<Home className="w-4 h-4" />} label="Explorar" />
-          <NavLink href="/map" icon={<Map className="w-4 h-4" />} label="Mapa" />
-          {user && <NavLink href="/my-cards" icon={<Layers className="w-4 h-4" />} label="Mis Cromos" />}
+          <NavLink href="/explore" icon={<Home className="w-4 h-4" />} label="Explorar" active={pathname === '/explore'} />
+          <NavLink href="/map" icon={<Map className="w-4 h-4" />} label="Mapa" active={pathname === '/map'} />
+          {user && <NavLink href="/my-cards" icon={<Layers className="w-4 h-4" />} label="Mis Cromos" active={pathname === '/my-cards'} />}
         </div>
 
         <div className="h-6 w-px bg-border mx-1" />
@@ -72,14 +74,14 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
             <>
               <UploadCardModal
                 trigger={
-                  <Button variant="ghost" size="sm" className="rounded-full font-bold gap-2 text-primary hover:bg-primary/10">
+                  <Button variant="ghost" size="sm" className="rounded-full cursor-pointer font-bold gap-2 text-primary hover:bg-primary/10">
                     <PlusCircle className="h-4 w-4" strokeWidth={2.5} />
                     <span className="hidden lg:inline">Publicar</span>
                   </Button>
                 }
               />
 
-              <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-accent overflow-hidden">
+              <Button asChild variant="ghost" size="icon" className={cn("rounded-full hover:bg-accent overflow-hidden", pathname === '/profile' && "bg-primary/10 ring-2 ring-primary/20")}>
                 <Link href="/profile">
                   {avatarUrl ? (
                     <Image src={avatarUrl} alt="Avatar" width={24} height={24} className="rounded-full object-cover" />
@@ -90,7 +92,7 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
               </Button>
 
               <form action={logout}>
-                <Button variant="ghost" size="icon" type="submit" className="rounded-full hover:bg-destructive/10 group">
+                <Button variant="ghost" size="icon" type="submit" className="rounded-full cursor-pointer hover:bg-destructive/10 group">
                   <LogOut className="h-4 w-4 text-muted-foreground group-hover:text-destructive transition-colors" />
                 </Button>
               </form>
@@ -128,12 +130,13 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
             className="absolute top-20 left-4 right-4 bg-background rounded-[2rem] border border-border shadow-2xl p-4 pointer-events-auto md:hidden overflow-hidden"
           >
             <div className="grid grid-cols-1 gap-2">
-              <MobileNavLink href="/explore" icon={<Home className="w-5 h-4" />} label="Explorar" onClick={() => setIsMobileMenuOpen(false)} />
-              <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" onClick={() => setIsMobileMenuOpen(false)} />
-              {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" onClick={() => setIsMobileMenuOpen(false)} />}
+              <MobileNavLink href="/explore" icon={<Home className="w-5 h-4" />} label="Explorar" active={pathname === '/explore'} onClick={() => setIsMobileMenuOpen(false)} />
+              <MobileNavLink href="/map" icon={<Map className="w-5 h-4" />} label="Mapa" active={pathname === '/map'} onClick={() => setIsMobileMenuOpen(false)} />
+              {user && <MobileNavLink href="/my-cards" icon={<Layers className="w-5 h-4" />} label="Mis Cromos" active={pathname === '/my-cards'} onClick={() => setIsMobileMenuOpen(false)} />}
               <div className="h-px bg-border my-2" />
               <MobileNavLink
                 href="/profile"
+                active={pathname === '/profile'}
                 icon={
                   avatarUrl ? (
                     <div className="relative w-5 h-5 rounded-full overflow-hidden border border-primary/20">
@@ -154,11 +157,16 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
   )
 }
 
-function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) {
+function NavLink({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active?: boolean }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all"
+      className={cn(
+        "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all",
+        active
+          ? "text-primary bg-primary/10 shadow-sm"
+          : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+      )}
     >
       {icon}
       <span>{label}</span>
@@ -166,14 +174,19 @@ function NavLink({ href, icon, label }: { href: string, icon: React.ReactNode, l
   )
 }
 
-function MobileNavLink({ href, icon, label, onClick }: { href: string, icon: React.ReactNode, label: string, onClick: () => void }) {
+function MobileNavLink({ href, icon, label, active, onClick }: { href: string, icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold text-foreground hover:bg-accent transition-all active:scale-[0.98]"
+      className={cn(
+        "flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-bold transition-all active:scale-[0.98]",
+        active
+          ? "bg-primary/10 text-primary"
+          : "text-foreground hover:bg-accent"
+      )}
     >
-      <span className="text-primary">{icon}</span>
+      <span className={cn(active ? "text-primary" : "text-primary/70")}>{icon}</span>
       {label}
     </Link>
   )
