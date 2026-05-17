@@ -9,13 +9,14 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import {
   MapPin, Camera, Loader2, User, Hash,
-  ArrowLeftRight, Sparkles, ImageIcon,
+  ArrowLeftRight, ImageIcon,
   CheckCircle2
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CameraCapture } from './camera-capture'
 import { TeamSelector } from './team-selector'
 import { useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 import {
   DialogHeader,
@@ -25,6 +26,18 @@ import {
 interface UploadCardFormProps {
   onSuccess?: () => void
 }
+
+const inputClasses = (hasError: boolean) => cn(
+  "w-full h-11 pl-11 pr-4 rounded-xl bg-muted border outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70",
+  hasError
+    ? "border-destructive focus:border-destructive focus:ring-2 focus:ring-destructive/20"
+    : "border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20"
+)
+
+const FieldError = ({ message }: { message?: string }) =>
+  message ? (
+    <p className="text-[11px] font-bold text-destructive mt-1 pl-1">{message}</p>
+  ) : null
 
 export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
   const router = useRouter()
@@ -45,6 +58,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
   } = useForm<CardValues>({
     resolver: zodResolver(cardSchema),
     defaultValues: {
+      playerName: '',
+      teamName: '',
+      desiredTrade: '',
+      country: '',
+      locationCity: '',
+      cardNumber: '',
       rarity: 'Normal',
     }
   })
@@ -67,12 +86,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setValue('lat', position.coords.latitude)
-          setValue('lng', position.coords.longitude)
+          setValue('lat', position.coords.latitude, { shouldValidate: true })
+          setValue('lng', position.coords.longitude, { shouldValidate: true })
           setIsCapturingLocation(false)
         },
-        (error) => {
-          console.error("Error getting location:", error)
+        (err) => {
+          console.error("Error getting location:", err)
           setIsCapturingLocation(false)
         }
       )
@@ -135,7 +154,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
           </DialogHeader>
 
           {/* Photo Capture Section */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
             <AnimatePresence mode="wait">
               {isCameraActive ? (
                 <motion.div
@@ -158,13 +177,14 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                 </motion.div>
               ) : (
                 <div
-                  className={`relative aspect-4/5 w-full max-w-sm mx-auto lg:mx-0 rounded-[2.5rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all duration-500 group
-                    ${preview
-                      ? 'shadow-2xl shadow-emerald-500/10 border-2 border-emerald-500/50 bg-emerald-500/5'
-                      : 'border-2 border-dashed border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:border-emerald-500/50'
-                    }
-                    ${errors.image ? 'border-red-500 bg-red-500/5' : ''}
-                  `}
+                  className={cn(
+                    "relative aspect-4/5 w-full max-w-sm mx-auto lg:mx-0 rounded-[2.5rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all duration-500 group border-2",
+                    preview
+                      ? "shadow-2xl shadow-emerald-500/10 border-emerald-500/50 bg-emerald-500/5"
+                      : errors.image
+                        ? "border-dashed border-destructive bg-destructive/5"
+                        : "border-dashed border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:border-emerald-500/50"
+                  )}
                 >
                   {preview ? (
                     <div className="absolute inset-0 w-full h-full group">
@@ -203,7 +223,9 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                           <ImageIcon className="h-6 w-6" />
                         </div>
                       </div>
-                      <p className="font-bold text-slate-900 dark:text-white">Sube la foto</p>
+                      <p className={cn("font-bold", errors.image ? "text-destructive" : "text-slate-900 dark:text-white")}>
+                        Sube la foto
+                      </p>
                     </div>
                   )}
                 </div>
@@ -219,8 +241,8 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
             />
 
             {errors.image && (
-              <p className="text-[10px] font-black text-red-500 text-center uppercase tracking-widest">
-                La foto es obligatoria
+              <p className="text-[11px] font-bold text-destructive text-center">
+                {errors.image.message as string}
               </p>
             )}
           </div>
@@ -230,8 +252,10 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
         <div className="p-6 sm:p-10 lg:p-16 flex flex-col gap-8">
 
           {/* Player Info */}
-          <div className="space-y-6">
-            <div className="space-y-2 group">
+          <div className="space-y-5">
+
+            {/* Nombre del jugador */}
+            <div className="space-y-1 group">
               <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">
                 Información del Jugador
               </label>
@@ -240,15 +264,16 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                 <input
                   {...register('playerName')}
                   placeholder="Nombre completo del jugador"
-                  className={`w-full h-12 pl-11 pr-4 rounded-xl bg-muted border ${errors.playerName ? 'border-destructive focus:border-destructive' : 'border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20'} outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70`}
+                  className={inputClasses(!!errors.playerName)}
                 />
               </div>
-              {errors.playerName && <p className="text-[10px] font-bold text-red-500">{errors.playerName.message}</p>}
+              <FieldError message={errors.playerName?.message} />
             </div>
 
+            {/* Equipo + N° Cromo */}
             <div className="grid grid-cols-2 gap-4">
 
-              <div className="space-y-2 group">
+              <div className="space-y-1 group">
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">Equipo</label>
                 <Controller
                   name="teamName"
@@ -258,16 +283,13 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                       value={field.value}
                       onChange={(name, code) => {
                         field.onChange(name)
-                        // Dynamic prefix: Replace existing prefix or set new one
                         const currentNum = watch('cardNumber') || ''
-                        // Check if it already starts with a 3-letter code (capital letters)
                         const prefixRegex = /^[A-Z]{3}\s/
                         if (prefixRegex.test(currentNum)) {
                           setValue('cardNumber', currentNum.replace(prefixRegex, `${code} `), { shouldValidate: true })
                         } else if (!currentNum.trim()) {
                           setValue('cardNumber', `${code} `, { shouldValidate: true })
                         } else {
-                          // Prepend if there's text but no prefix
                           setValue('cardNumber', `${code} ${currentNum.trim()}`, { shouldValidate: true })
                         }
                       }}
@@ -275,17 +297,20 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                     />
                   )}
                 />
+                <FieldError message={errors.teamName?.message} />
               </div>
-              <div className="space-y-2 group">
+
+              <div className="space-y-1 group">
                 <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500">N° Cromo</label>
                 <div className="relative">
                   <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <input
                     {...register('cardNumber')}
                     placeholder="Ej: ARG 10"
-                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70"
+                    className={inputClasses(!!errors.cardNumber)}
                   />
                 </div>
+                <FieldError message={errors.cardNumber?.message} />
               </div>
             </div>
 
@@ -300,12 +325,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
                       key={r}
                       type="button"
                       onClick={() => setValue('rarity', r)}
-                      className={`h-11 rounded-xl text-[11px] font-bold tracking-tight border active:scale-[0.97] transition-[transform,background-color,border-color] duration-200
-                        ${isActive
-                          ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/20'
-                          : 'border-border bg-card text-muted-foreground hover:border-muted-foreground/30'
-                        }
-                      `}
+                      className={cn(
+                        "h-11 rounded-xl text-[11px] font-bold tracking-tight border active:scale-[0.97] transition-[transform,background-color,border-color] duration-200",
+                        isActive
+                          ? "border-primary bg-primary/10 text-primary ring-1 ring-primary/20"
+                          : "border-border bg-card text-muted-foreground hover:border-muted-foreground/30"
+                      )}
                       style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
                     >
                       {r}
@@ -317,21 +342,47 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
           </div>
 
           {/* Location */}
-          <div className="rounded-[2rem] bg-slate-50/50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800 space-y-4">
+          <div className="rounded-[2rem] bg-slate-50/50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800 p-5 space-y-4">
             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
               <MapPin className="h-3.5 w-3.5" /> Ubicación
             </h3>
+
             <div className="grid grid-cols-2 gap-4">
-              <input
-                {...register('country')}
-                placeholder="País"
-                className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
-              />
-              <input
-                {...register('locationCity')}
-                placeholder="Ciudad"
-                className="w-full h-11 pl-9 pr-3 rounded-lg bg-muted border border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70"
-              />
+              {/* País */}
+              <div className="space-y-1">
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    {...register('country')}
+                    placeholder="País"
+                    className={cn(
+                      "w-full h-11 pl-9 pr-3 rounded-lg bg-muted border outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70",
+                      errors.country
+                        ? "border-destructive focus:border-destructive focus:ring-2 focus:ring-destructive/20"
+                        : "border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    )}
+                  />
+                </div>
+                <FieldError message={errors.country?.message} />
+              </div>
+
+              {/* Ciudad */}
+              <div className="space-y-1">
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    {...register('locationCity')}
+                    placeholder="Ciudad"
+                    className={cn(
+                      "w-full h-11 pl-9 pr-3 rounded-lg bg-muted border outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-sm placeholder:text-muted-foreground/70",
+                      errors.locationCity
+                        ? "border-destructive focus:border-destructive focus:ring-2 focus:ring-destructive/20"
+                        : "border-transparent focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
+                    )}
+                  />
+                </div>
+                <FieldError message={errors.locationCity?.message} />
+              </div>
             </div>
 
             <Button
@@ -339,9 +390,12 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
               variant="outline"
               onClick={handleGetLocation}
               disabled={isCapturingLocation}
-              className={`w-full h-11 rounded-lg font-bold gap-2 border-dashed active:scale-[0.97] transition-[transform,background-color,border-color] duration-200
-                ${capturedLat ? 'border-primary bg-primary/10 text-primary' : 'hover:border-border hover:bg-muted text-muted-foreground'}
-              `}
+              className={cn(
+                "w-full h-11 rounded-lg font-bold gap-2 border-dashed active:scale-[0.97] transition-[transform,background-color,border-color] duration-200",
+                capturedLat
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "hover:border-border hover:bg-muted text-muted-foreground"
+              )}
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             >
               {isCapturingLocation ? (
@@ -355,7 +409,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
           </div>
 
           {/* Trade Info */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             <label className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500 flex items-center gap-2">
               <ArrowLeftRight className="h-3.5 w-3.5 text-emerald-500" /> ¿Qué buscas a cambio?
             </label>
@@ -363,8 +417,14 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
               {...register('desiredTrade')}
               placeholder="Ej: Solo cambio por Lionel Messi..."
               rows={3}
-              className={`w-full p-4 rounded-xl bg-muted border ${errors.desiredTrade ? 'border-destructive' : 'border-transparent focus:border-primary'} focus:bg-background focus:ring-4 focus:ring-primary/10 outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-foreground resize-none placeholder:text-muted-foreground/70`}
+              className={cn(
+                "w-full p-4 rounded-xl bg-muted border outline-none transition-[border-color,background-color,box-shadow] duration-200 font-medium text-foreground resize-none placeholder:text-muted-foreground/70",
+                errors.desiredTrade
+                  ? "border-destructive focus:border-destructive focus:ring-2 focus:ring-destructive/20"
+                  : "border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/10"
+              )}
             />
+            <FieldError message={errors.desiredTrade?.message} />
           </div>
 
           {/* Action */}
@@ -379,7 +439,7 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
               {isLoading ? 'Publicando...' : 'Publicar cromo'}
             </Button>
 
-            {error && <p className="text-center text-xs font-bold text-red-500 mt-4">⚠️ {error}</p>}
+            {error && <p className="text-center text-xs font-bold text-destructive mt-4">⚠️ {error}</p>}
           </div>
         </div>
       </div>

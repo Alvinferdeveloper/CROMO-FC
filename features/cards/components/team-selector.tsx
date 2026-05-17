@@ -21,7 +21,7 @@ import {
 import { TEAMS } from "../hooks/use-teams"
 
 interface TeamSelectorProps {
-  value: string
+  value?: string
   onChange: (value: string, code: string) => void
   error?: boolean
 }
@@ -29,7 +29,7 @@ interface TeamSelectorProps {
 /**
  * High-quality Team Selector using professional SVG flags from FlagCDN.
  */
-export function TeamSelector({ value, onChange, error }: TeamSelectorProps) {
+export function TeamSelector({ value = '', onChange, error }: TeamSelectorProps) {
   const [open, setOpen] = React.useState(false)
 
   // Find the selected team object to show its flag
