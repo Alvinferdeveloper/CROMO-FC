@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { data: card } = await supabase
     .from('card_posts')
-    .select('player_name, team_name, image_url, description')
+    .select('player_name, team_name, image_url, description, rarity')
     .eq('id', id)
     .single()
 
@@ -32,20 +32,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = `${card.player_name} (${card.team_name})`
   const description = card.description || `Intercambia el cromo de ${card.player_name} del equipo ${card.team_name} en ${siteConfig.name}.`
 
+  // Construct dynamic OG image URL
+  const ogUrl = new URL(`${siteConfig.url}/api/og`)
+  ogUrl.searchParams.set('player', card.player_name)
+  ogUrl.searchParams.set('team', card.team_name)
+  if (card.image_url) ogUrl.searchParams.set('image', card.image_url)
+  if (card.rarity) ogUrl.searchParams.set('rarity', card.rarity)
+
   return {
     title,
     description,
     openGraph: {
       title: `${title} | ${siteConfig.name}`,
       description,
-      images: card.image_url ? [card.image_url] : [],
+      images: [ogUrl.toString()],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
       title: `${title} | ${siteConfig.name}`,
       description,
-      images: card.image_url ? [card.image_url] : [],
+      images: [ogUrl.toString()],
     },
   }
 }
