@@ -11,13 +11,20 @@ import { Button } from "@/components/ui/button"
 import { PlusCircle, Sparkles } from "lucide-react"
 import { UploadCardForm } from "./upload-card-form"
 import { useState } from "react"
+import { Card } from "@/types/card"
 
 interface UploadCardModalProps {
   trigger?: React.ReactNode
+  onSuccess?: (newCard: Card) => void
 }
 
-export function UploadCardModal({ trigger }: UploadCardModalProps) {
+export function UploadCardModal({ trigger, onSuccess }: UploadCardModalProps) {
   const [open, setOpen] = useState(false)
+
+  const handleSuccess = (newCard: Card) => {
+    setOpen(false)
+    if (onSuccess) onSuccess(newCard)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -37,7 +44,7 @@ export function UploadCardModal({ trigger }: UploadCardModalProps) {
 
         <div className="relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
           <div className="">
-            <UploadCardForm onSuccess={() => setOpen(false)} />
+            <UploadCardForm onSuccess={handleSuccess} />
           </div>
         </div>
 

@@ -68,21 +68,25 @@ export async function createCardPost(formData: FormData) {
     .getPublicUrl(filePath)
 
   // 3. Guardar en la base de datos
-  const { error: dbError } = await supabase.from('card_posts').insert({
-    user_id: user.id,
-    player_name: playerName,
-    card_number: cardNumber,
-    team_name: teamName,
-    album_name: albumName,
-    description: description,
-    desired_trade: desiredTrade,
-    image_url: publicUrl,
-    country: country,
-    location_city: locationCity,
-    location_lat: lat,
-    location_lng: lng,
-    rarity: rarity,
-  })
+  const { data: newCard, error: dbError } = await supabase
+    .from('card_posts')
+    .insert({
+      user_id: user.id,
+      player_name: playerName,
+      card_number: cardNumber,
+      team_name: teamName,
+      album_name: albumName,
+      description: description,
+      desired_trade: desiredTrade,
+      image_url: publicUrl,
+      country: country,
+      location_city: locationCity,
+      location_lat: lat,
+      location_lng: lng,
+      rarity: rarity,
+    })
+    .select()
+    .single()
 
   if (dbError) {
     console.log('Error al guardar el post:', dbError)
@@ -91,7 +95,7 @@ export async function createCardPost(formData: FormData) {
 
   revalidatePath('/my-cards')
   revalidatePath('/')
-  return { success: true }
+  return { success: true, data: newCard }
 }
 
 export async function updateCardPost(cardId: string, formData: FormData) {

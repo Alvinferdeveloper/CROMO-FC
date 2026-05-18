@@ -12,9 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface MyCardsInfiniteFeedProps {
   initialCards: Card[]
+  onCardUpdate?: (updatedCard: Card) => void
+  onCardDelete?: (cardId: string) => void
 }
 
-export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) {
+export function MyCardsInfiniteFeed({ initialCards, onCardUpdate, onCardDelete }: MyCardsInfiniteFeedProps) {
   const [cards, setCards] = useState<Card[]>(initialCards)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
@@ -51,23 +53,24 @@ export function MyCardsInfiniteFeed({ initialCards }: MyCardsInfiniteFeedProps) 
   }
 
   const handleCardDelete = (cardId: string) => {
+    if (onCardDelete) onCardDelete(cardId)
     setCards(prev => prev.filter(card => card.id !== cardId))
   }
 
   const handleCardToggle = (cardId: string) => {
+    if (onCardDelete) onCardDelete(cardId) // When toggling availability, it leaves the current tab
     setCards(prev => prev.filter(card => card.id !== cardId))
   }
 
   const handleCardUpdate = (updatedCard: Card) => {
+    if (onCardUpdate) onCardUpdate(updatedCard)
     setCards(prev => prev.map(card => card.id === updatedCard.id ? updatedCard : card))
   }
 
-  // Sync only if structure changes or initial load, to protect infinite scroll progress
+  // Sync only if structure changes drastically or initial load
   useEffect(() => {
-    if (cards.length === 0 || initialCards.length === 0) {
+    if (initialCards.length !== cards.length || (initialCards.length > 0 && initialCards[0].id !== cards[0]?.id)) {
       setCards(initialCards)
-      setPage(1)
-      setHasMore(initialCards.length >= 12)
     }
   }, [initialCards])
 

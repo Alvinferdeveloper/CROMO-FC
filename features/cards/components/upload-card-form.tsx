@@ -24,8 +24,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+import { Card } from '@/types/card'
+
 interface UploadCardFormProps {
-  onSuccess?: () => void
+  onSuccess?: (newCard: Card) => void
 }
 
 const inputClasses = (hasError: boolean) => cn(
@@ -126,8 +128,8 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
     } else {
       toast.success('¡Cromo publicado con éxito! 🎉')
       router.refresh()
-      if (onSuccess) {
-        onSuccess()
+      if (onSuccess && result.data) {
+        onSuccess(result.data as Card)
       } else {
         router.push('/my-cards')
       }
