@@ -3,10 +3,10 @@ import { Flame, Star, Trophy } from 'lucide-react'
 import Image from 'next/image'
 
 const TRENDING_CARDS = [
-  { id: '1', name: 'Lionel Messi', team: 'Argentina', type: 'Legendary', image: 'https://picsum.photos/seed/messi-arg/400/500' },
-  { id: '2', name: 'Neymar Jr', team: 'Brasil', type: 'Epic', image: 'https://picsum.photos/seed/neymar-bra/400/500' },
-  { id: '3', name: 'Kylian Mbappé', team: 'Francia', type: 'Brilliant', image: 'https://picsum.photos/seed/mbappe-fra/400/500' },
-  { id: '4', name: 'Vinícius Júnior', team: 'Brasil', type: 'Rare', image: 'https://picsum.photos/seed/vini-bra/400/500' },
+  { id: '1', name: 'Lionel Messi', team: 'Argentina', type: 'Normal', image: '/images/messi.jpg' },
+  { id: '2', name: 'Cristiano Ronaldo', team: 'Portugal', type: 'Oro', image: '/images/cristiano.jpg' },
+  { id: '3', name: 'Kylian Mbappé', team: 'Francia', type: 'Bronce', image: '/images/mbappe.jpg' },
+  { id: '4', name: 'Lamine Yamal', team: 'España', type: 'Plata', image: '/images/lamine.jpg' },
 ]
 
 export function TrendingSidebar() {
@@ -37,11 +37,11 @@ export function TrendingSidebar() {
           <Trophy className="h-3 w-3 text-amber-500" />
           Los más buscados
         </h3>
-        
+
         <div className="space-y-3.5">
           {TRENDING_CARDS.map((card) => (
-            <div 
-              key={card.id} 
+            <div
+              key={card.id}
               className="flex items-center gap-3.5 group cursor-pointer rounded-xl p-2 -mx-2 transition-[background-color] duration-200 hover:bg-accent/50"
               style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
             >
@@ -59,8 +59,8 @@ export function TrendingSidebar() {
           ))}
         </div>
 
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full mt-5 rounded-xl text-xs font-medium h-9 hover:border-primary/30 hover:bg-primary/5 active:scale-[0.97] transition-[transform,border-color,background-color] duration-200"
           style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
         >
