@@ -37,6 +37,7 @@ export function VisualCardDeck() {
                 src={card.image_url}
                 alt={card.name}
                 fill
+                sizes="(max-width: 768px) 112px, 144px"
                 className="object-cover"
               />
               <div className="absolute inset-0 flex items-center justify-center bg-emerald-600/10 font-black text-emerald-900/20 text-2xl tracking-tighter">

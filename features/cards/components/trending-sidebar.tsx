@@ -48,7 +48,7 @@ export function TrendingSidebar() {
               <div className="relative h-14 w-11 shrink-0 rounded-lg overflow-hidden border border-border transition-transform duration-200 group-hover:scale-105"
                 style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
               >
-                <Image src={card.image} alt={card.name} fill className="object-cover" />
+                <Image src={card.image} alt={card.name} fill sizes="44px" className="object-cover" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate text-foreground">{card.name}</p>

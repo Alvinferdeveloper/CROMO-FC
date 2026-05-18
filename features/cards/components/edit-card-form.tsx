@@ -191,7 +191,7 @@ export function EditCardForm({ card, onSuccess }: EditCardFormProps) {
                 >
                   {preview ? (
                     <div className="absolute inset-0 w-full h-full group">
-                      <Image src={preview} alt="Preview" fill className="object-cover" />
+                      <Image src={preview} alt="Preview" fill sizes="(max-width: 768px) 100vw, 384px" className="object-cover" />
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center backdrop-blur-sm gap-4">
                         <Button
                           type="button"

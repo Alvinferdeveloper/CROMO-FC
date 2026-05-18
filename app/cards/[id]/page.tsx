@@ -234,7 +234,7 @@ export default async function CardDetailPage({ params }: PageProps) {
               <div className="flex items-center gap-4">
                 <div className="relative h-12 w-12 rounded-full bg-muted border border-border overflow-hidden flex items-center justify-center shrink-0 shadow-sm">
                   {hasAvatar ? (
-                    <Image src={card.profiles.avatar_url!} alt="Avatar" fill className="object-cover" />
+                    <Image src={card.profiles.avatar_url!} alt="Avatar" fill sizes="48px" className="object-cover" />
                   ) : (
                     <User className="h-5 w-5 text-muted-foreground" />
                   )}

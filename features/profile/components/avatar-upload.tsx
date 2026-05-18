@@ -60,7 +60,7 @@ export function AvatarUpload({ userId, initialUrl }: AvatarUploadProps) {
         </AnimatePresence>
 
         {initialUrl ? (
-          <Image src={initialUrl} alt="Avatar" fill className="object-cover" />
+          <Image src={initialUrl} alt="Avatar" fill sizes="(max-width: 768px) 128px, 160px" className="object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-5xl bg-slate-100 dark:bg-zinc-800 text-slate-300">
             <User className="w-12 h-12" />
