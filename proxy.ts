@@ -51,6 +51,7 @@ function applySecurityHeaders(response: NextResponse, nonce: string) {
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
+    connect-src 'self' *.supabase.co *.upstash.io;
   `.replace(/\s{2,}/g, ' ').trim()
 
   const headers = response.headers
