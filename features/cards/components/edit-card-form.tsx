@@ -18,6 +18,7 @@ import { TeamSelector } from './team-selector'
 import { Card } from '@/types/card'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 import {
   DialogHeader,
@@ -125,8 +126,10 @@ export function EditCardForm({ card, onSuccess }: EditCardFormProps) {
 
     if (result?.error) {
       setError(result.error)
+      toast.error(result.error)
       setIsLoading(false)
     } else {
+      toast.success('¡Cromo actualizado correctamente! ✨')
       router.refresh()
       if (onSuccess && result.data) onSuccess(result.data as Card)
     }

@@ -9,6 +9,7 @@ import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import { toggleCardAvailability, deleteCardPost } from '../actions/card-actions'
 import { EditCardModal } from './edit-card-modal'
 import { Card } from '@/types/card'
+import { toast } from 'sonner'
 
 interface MyCardItemProps {
   card: Card
@@ -22,18 +23,24 @@ export function MyCardItem({ card, onDelete, onToggle, onUpdate }: MyCardItemPro
 
   const handleToggle = async () => {
     setIsLoading(true)
-    const { success } = await toggleCardAvailability(card.id, card.is_available)
+    const { success, error } = await toggleCardAvailability(card.id, card.is_available) as any
     if (success) {
+      toast.success(card.is_available ? 'Cromo marcado como intercambiado' : 'Cromo reactivado con éxito')
       onToggle(card.id)
+    } else {
+      toast.error(error || 'Error al actualizar el estado')
     }
     setIsLoading(false)
   }
 
   const handleDelete = async () => {
     setIsLoading(true)
-    const { success } = await deleteCardPost(card.id)
+    const { success, error } = await deleteCardPost(card.id) as any
     if (success) {
+      toast.success('Cromo eliminado de tu colección')
       onDelete(card.id)
+    } else {
+      toast.error(error || 'Error al eliminar el cromo')
     }
     setIsLoading(false)
   }

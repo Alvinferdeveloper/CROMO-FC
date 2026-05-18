@@ -7,6 +7,7 @@ import { Navbar } from "@/components/shared/navbar";
 import { Providers } from "@/providers/query-provider";
 import { OnboardingWrapper } from "@/components/shared/onboarding-wrapper";
 import { siteConfig } from "@/lib/config";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -88,6 +89,7 @@ export default function RootLayout({
           <LayoutWrapper navbar={<Navbar />}>
             {children}
           </LayoutWrapper>
+          <Toaster richColors position="top-center" />
         </Providers>
       </body>
     </html>

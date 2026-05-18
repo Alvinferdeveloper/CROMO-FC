@@ -17,6 +17,7 @@ import { CameraCapture } from './camera-capture'
 import { TeamSelector } from './team-selector'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 import {
   DialogHeader,
@@ -120,8 +121,10 @@ export function UploadCardForm({ onSuccess }: UploadCardFormProps) {
 
     if (result?.error) {
       setError(result.error)
+      toast.error(result.error)
       setIsLoading(false)
     } else {
+      toast.success('¡Cromo publicado con éxito! 🎉')
       router.refresh()
       if (onSuccess) {
         onSuccess()
