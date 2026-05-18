@@ -61,9 +61,9 @@ export const metadata: Metadata = {
     creator: "@CromoFc",
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/images/logo.png",
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
   metadataBase: new URL(siteConfig.url),
