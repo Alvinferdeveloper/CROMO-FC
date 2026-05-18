@@ -48,6 +48,7 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
               src="/images/logo.png"
               alt="Cromo FC Logo"
               fill
+              sizes="40px"
               className="object-contain"
               priority
             />
@@ -84,7 +85,7 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
               <Button asChild variant="ghost" size="icon" className={cn("rounded-full hover:bg-accent overflow-hidden", pathname === '/profile' && "bg-primary/10 ring-2 ring-primary/20")}>
                 <Link href="/profile">
                   {avatarUrl ? (
-                    <Image src={avatarUrl} alt="Avatar" width={24} height={24} className="rounded-full object-cover" />
+                    <Image src={avatarUrl} alt="Avatar" width={24} height={24} sizes="24px" className="rounded-full object-cover" />
                   ) : (
                     <User className="h-4 w-4 text-muted-foreground" />
                   )}
@@ -140,7 +141,7 @@ export function FloatingNavbar({ user, avatarUrl }: FloatingNavbarProps) {
                 icon={
                   avatarUrl ? (
                     <div className="relative w-5 h-5 rounded-full overflow-hidden border border-primary/20">
-                      <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
+                      <Image src={avatarUrl} alt="Avatar" fill sizes="20px" className="object-cover" />
                     </div>
                   ) : (
                     <User className="w-5 h-4" />
