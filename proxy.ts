@@ -24,7 +24,7 @@ try {
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     ratelimit = new Ratelimit({
       redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(20, "60 s"),
+      limiter: Ratelimit.slidingWindow(100, "60 s"),
       analytics: true,
       prefix: "@upstash/ratelimit",
     })
