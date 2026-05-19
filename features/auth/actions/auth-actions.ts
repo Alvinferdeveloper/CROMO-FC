@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase-server'
 import { loginSchema, signupSchema, type LoginValues, type SignupValues } from '../schemas/auth-schema'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { getFriendlyErrorMessage } from '@/lib/error-handler'
 
 export async function login(values: LoginValues) {
   const supabase = await createClient()
@@ -17,7 +18,7 @@ export async function login(values: LoginValues) {
   const { error } = await supabase.auth.signInWithPassword(validatedFields.data)
 
   if (error) {
-    return { error: error.message }
+    return { error: getFriendlyErrorMessage(error) }
   }
 
   revalidatePath('/', 'layout')
@@ -46,7 +47,7 @@ export async function signup(values: SignupValues) {
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: getFriendlyErrorMessage(error) }
   }
 
   revalidatePath('/', 'layout')
