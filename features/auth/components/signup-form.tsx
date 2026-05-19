@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import GoogleIcon from '@/components/shared/icons/google'
+import { siteConfig } from '@/lib/config'
 
 export function SignupForm() {
   const [error, setError] = useState<string | null>(null)
@@ -40,7 +41,7 @@ export function SignupForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+        redirectTo: `${siteConfig.url}/api/auth/callback`,
       },
     })
 
