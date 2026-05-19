@@ -1,9 +1,18 @@
+-- 0. CLEANUP (Optional but recommended for a fresh state)
+DELETE FROM auth.users 
+WHERE email IN (
+  'carlos.madrid@test.com',
+  'ana.mexico@test.com',
+  'mateo.argentina@test.com',
+  'john.ny@test.com',
+  'sophie.london@test.com'
+);
+
 -- 1. CREATE TEST USERS (Auth)
 -- Note: The password for all will be 'password123'
--- UUIDs corregidos (solo caracteres hexadecimales 0-9, a-f)
 INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, raw_user_meta_data)
 VALUES 
-  ('8fd685fc-429e-4640-be34-85fab69a962b', 'carlos.madrid@test.com', crypt('password123', gen_salt('bf')), now(), '{"full_name": "Carlos de Madrid"}'),
+  ('8fd685fc-426e-4640-be34-85fab69a962b', 'carlos.madrid@test.com', crypt('password123', gen_salt('bf')), now(), '{"full_name": "Carlos de Madrid"}'),
   ('a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', 'ana.mexico@test.com', crypt('password123', gen_salt('bf')), now(), '{"full_name": "Ana G. CDMX"}'),
   ('b2c3d4e5-f6a7-4b6c-8d9e-0f1a2b3c4d5e', 'mateo.argentina@test.com', crypt('password123', gen_salt('bf')), now(), '{"full_name": "Mateo Messi-Fan"}'),
   ('c3d4e5f6-a7b8-4c7d-8e9f-0a1b2c3d4e5f', 'john.ny@test.com', crypt('password123', gen_salt('bf')), now(), '{"full_name": "John Collector NY"}'),
@@ -13,7 +22,7 @@ ON CONFLICT (id) DO NOTHING;
 -- 2. Update Profiles (Locations and Onboarding)
 UPDATE public.profiles SET 
   location_city = 'Madrid', country = 'España', location_lat = 40.4168, location_lng = -3.7038, onboarding_completed = true 
-  WHERE id = '8fd685fc-429e-4640-be34-85fab69a962b';
+  WHERE id = '8fd685fc-426e-4640-be34-85fab69a962b';
 
 UPDATE public.profiles SET 
   location_city = 'Ciudad de México', country = 'México', location_lat = 19.4326, location_lng = -99.1332, onboarding_completed = true 
@@ -41,11 +50,21 @@ DECLARE
     v_img TEXT;
     v_rarity TEXT;
 BEGIN
-    FOR user_record IN SELECT id, location_city, country, location_lat, location_lng FROM public.profiles WHERE onboarding_completed = true LOOP
+    FOR user_record IN 
+        SELECT id, location_city, country, location_lat, location_lng 
+        FROM public.profiles 
+        WHERE id IN (
+            '8fd685fc-426e-4640-be34-85fab69a962b', 
+            'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', 
+            'b2c3d4e5-f6a7-4b6c-8d9e-0f1a2b3c4d5e', 
+            'c3d4e5f6-a7b8-4c7d-8e9f-0a1b2c3d4e5f', 
+            'd4e5f6a7-b8c9-4d8e-9f0a-1b2c3d4e5f6a'
+        )
+    LOOP
         FOR i IN 0..4 LOOP
             -- Logic for player variety
             v_player := CASE i WHEN 0 THEN 'Lionel Messi' WHEN 1 THEN 'Cristiano Ronaldo' WHEN 2 THEN 'Kylian Mbappé' WHEN 3 THEN 'Lamine Yamal' ELSE 'Harry Kane' END;
-            v_team   := CASE i WHEN 0 THEN 'Argentina' WHEN 1 THEN 'Portugal' WHEN 2 THEN 'Francia' WHEN 3 THEN 'España' ELSE 'Brasil' END;
+            v_team   := CASE i WHEN 0 THEN 'Argentina' WHEN 1 THEN 'Portugal' WHEN 2 THEN 'Francia' WHEN 3 THEN 'España' ELSE 'Inglaterra' END;
             v_img    := CASE i WHEN 0 THEN 'https://aygbfmoatmptrztprwun.supabase.co/storage/v1/object/public/test/messi.jpg' 
                                WHEN 1 THEN 'https://aygbfmoatmptrztprwun.supabase.co/storage/v1/object/public/test/cristiano.jpg' 
                                WHEN 2 THEN 'https://aygbfmoatmptrztprwun.supabase.co/storage/v1/object/public/test/mbappe.jpg' 
