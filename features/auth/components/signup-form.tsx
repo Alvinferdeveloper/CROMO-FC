@@ -65,6 +65,22 @@ export function SignupForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-1.5 group">
+          <label className="text-sm font-bold text-muted-foreground" htmlFor="fullName">
+            Nombre completo
+          </label>
+          <input
+            {...register('fullName')}
+            id="fullName"
+            placeholder="Juan Pérez"
+            className={`w-full h-12 px-4 rounded-xl bg-muted border ${errors.fullName ? 'border-destructive focus:border-destructive' : 'border-transparent focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/20'} outline-none transition-[border-color,background-color,box-shadow] duration-200 font-semibold text-foreground placeholder:font-medium placeholder:text-muted-foreground/70`}
+            disabled={isLoading}
+          />
+          {errors.fullName && (
+            <p className="text-[10px] font-bold text-destructive">{errors.fullName.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1.5 group">
           <label className="text-sm font-bold text-muted-foreground" htmlFor="email">
             Correo electrónico
           </label>
