@@ -8,6 +8,7 @@ import { Providers } from "@/providers/query-provider";
 import { OnboardingWrapper } from "@/components/shared/onboarding-wrapper";
 import { siteConfig } from "@/lib/config";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react"
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -90,6 +91,7 @@ export default function RootLayout({
             {children}
           </LayoutWrapper>
           <Toaster richColors position="top-center" />
+          <Analytics />
         </Providers>
       </body>
     </html>
