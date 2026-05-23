@@ -98,10 +98,9 @@ export default async function ExplorePage({ searchParams }: PageProps) {
             <div className="space-y-5 max-w-6xl mx-auto pb-20">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold text-foreground uppercase tracking-widest text-[11px]">
+                  <h2 className="text-lg font-bold text-foreground uppercase">
                     Mercado de cromos
                   </h2>
-                  <h3 className="text-2xl font-black tracking-tighter">Encuentra tu próximo intercambio</h3>
                 </div>
 
                 {isNearbyActive && (
