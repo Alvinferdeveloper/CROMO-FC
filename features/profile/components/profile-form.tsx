@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { profileSchema, type ProfileValues } from '../schemas/profile-schema'
 import { updateProfile } from '../actions/profile-actions'
@@ -10,6 +10,8 @@ import { MapPin, Loader2, User, Globe, Navigation, Mail, Phone } from 'lucide-re
 import InstagramIcon from '@/components/shared/icons/Instagram'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 import { Profile } from '@/types/card'
 
@@ -29,6 +31,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -112,15 +115,31 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
 
         {/* Whatsapp */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700 dark:text-zinc-300">WhatsApp</label>
-          <div className="relative">
-            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              {...register('whatsapp')}
-              placeholder="54 9 11 ..."
-              className={inputClasses(!!errors.whatsapp)}
+          <label className="text-sm font-semibold text-slate-700 dark:text-zinc-300">WhatsApp (Internacional)</label>
+          <div className={cn(
+            "relative flex items-center w-full h-12 px-4 rounded-xl bg-muted border transition-all duration-200",
+            errors.whatsapp ? "border-destructive ring-1 ring-destructive" : "border-transparent focus-within:ring-4 focus-within:ring-primary/20 focus-within:bg-background focus-within:border-primary"
+          )}>
+            <Phone className="h-4 w-4 text-slate-400 mr-3 shrink-0" />
+            <Controller
+              name="whatsapp"
+              control={control}
+              render={({ field }) => (
+                <PhoneInput
+                  international
+                  defaultCountry="MX"
+                  placeholder="Número de teléfono"
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="flex-1 bg-transparent text-foreground font-semibold outline-none"
+                  numberInputProps={{
+                    className: "w-full bg-transparent outline-none h-11 text-sm font-semibold text-slate-900 dark:text-white placeholder:text-muted-foreground/50",
+                  }}
+                />
+              )}
             />
           </div>
+          {errors.whatsapp && <p className="text-[10px] font-bold text-destructive px-2">{errors.whatsapp.message}</p>}
         </div>
 
         {/* Instagram */}

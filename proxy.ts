@@ -43,7 +43,7 @@ function applySecurityHeaders(response: NextResponse, nonce: string) {
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDevelopment ? "'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: *.supabase.co images.unsplash.com picsum.photos lh3.googleusercontent.com *.basemaps.cartocdn.com *.tile.openstreetmap.org *.openstreetmap.org flagcdn.com;
+    img-src 'self' blob: data: *.supabase.co images.unsplash.com picsum.photos lh3.googleusercontent.com *.basemaps.cartocdn.com *.tile.openstreetmap.org *.openstreetmap.org flagcdn.com purecatamphetamine.github.io;
     font-src 'self';
     object-src 'none';
     base-uri 'self';

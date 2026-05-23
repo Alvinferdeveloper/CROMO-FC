@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   User as UserIcon, MessageCircle, MapPin,
   Navigation, CheckCircle2, Loader2,
-  Sparkles
+  Sparkles, Phone
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from '@/lib/utils'
@@ -15,6 +15,8 @@ import { updateProfile } from '../actions/profile-actions'
 import { completeOnboarding } from '../actions/onboarding-actions'
 import { User } from '@supabase/supabase-js'
 import { Profile } from '@/types/card'
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 
 interface OnboardingFormProps {
   user: User
@@ -31,6 +33,7 @@ export function OnboardingForm({ user, profile, onSuccess, onSkip }: OnboardingF
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -99,17 +102,33 @@ export function OnboardingForm({ user, profile, onSuccess, onSkip }: OnboardingF
         </div>
 
         {/* Social Grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1 group">
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">WhatsApp</label>
-            <div className="relative">
-              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
-              <input
-                {...register('whatsapp')}
-                className={inputClasses(!!errors.whatsapp)}
-                placeholder="+506..."
+            <div className={cn(
+              "relative flex items-center w-full h-11 px-3 rounded-xl bg-muted border transition-all duration-200",
+              errors.whatsapp ? "border-destructive ring-1 ring-destructive" : "border-transparent focus-within:ring-4 focus-within:ring-primary/20 focus-within:bg-background focus-within:border-primary"
+            )}>
+              <MessageCircle className="w-4 h-4 text-emerald-500 mr-2 shrink-0" />
+              <Controller
+                name="whatsapp"
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    international
+                    defaultCountry="MX"
+                    placeholder="Teléfono"
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="flex-1 bg-transparent text-foreground font-semibold outline-none"
+                    numberInputProps={{
+                      className: "w-full bg-transparent outline-none h-10 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-muted-foreground/50",
+                    }}
+                  />
+                )}
               />
             </div>
+            {errors.whatsapp && <p className="text-[9px] font-bold text-destructive px-1">{errors.whatsapp.message}</p>}
           </div>
           <div className="space-y-1 group">
             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Instagram</label>
