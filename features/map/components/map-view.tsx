@@ -182,10 +182,10 @@ export default function MapView({ userLocation }: MapViewProps) {
       </MapContainer>
 
       {/* Legend Overlay */}
-      <div className="absolute bottom-8 left-8 z-1000 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white/20 shadow-2xl max-w-[280px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="absolute bottom-8 left-8 z-1000 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl p-6 rounded-lg border border-white/20 shadow-2xl max-w-[280px] animate-in fade-in slide-in-from-bottom-4 duration-1000">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
-          <h4 className="font-black text-[10px] uppercase tracking-[0.3em] text-zinc-900 dark:text-white">Red de Intercambio</h4>
+          <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+          <h4 className="font-black text-md uppercase text-zinc-900 dark:text-white">Red de Intercambio</h4>
         </div>
         <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed font-bold">
           Explora los cromos disponibles cerca de ti. Cada marcador es una oportunidad de completar tu álbum.
