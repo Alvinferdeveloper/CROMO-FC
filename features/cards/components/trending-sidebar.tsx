@@ -43,10 +43,6 @@ export function TrendingSidebar() {
           {/* Left */}
           <div className="px-4 py-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500/10">
-                <Users className="w-3.5 h-3.5 text-emerald-500" />
-              </div>
-
               <span className="text-[10px] font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Active
               </span>
@@ -64,10 +60,6 @@ export function TrendingSidebar() {
           {/* Right */}
           <div className="border-l border-zinc-100 dark:border-zinc-800 px-4 py-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-500/10">
-                <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-              </div>
-
               <span className="text-[10px] font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
                 Trades
               </span>
@@ -94,7 +86,6 @@ export function TrendingSidebar() {
       <div className="space-y-5 px-2">
         <div className="flex items-center justify-between px-1">
           <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
-            <Trophy className="h-3.5 w-3.5 text-amber-500" />
             Tendencias Semanales
           </h3>
         </div>
@@ -109,7 +100,7 @@ export function TrendingSidebar() {
 
         <Button
           variant="ghost"
-          className="w-full group cursor-pointer h-12 rounded-2xl border  bg-primary hover:bg-primary/80 hover:border-emerald-500/20 transition-all duration-300 active:scale-[0.98]"
+          className="w-full group cursor-pointer h-12 rounded-lg border  bg-primary hover:bg-primary/80 hover:border-emerald-500/20 transition-all duration-300 active:scale-[0.98]"
         >
           <span className="text-xs font-black uppercase text-white tracking-widest transition-colors">
             Explorar Ranking
@@ -119,7 +110,7 @@ export function TrendingSidebar() {
       </div>
 
       {/* ── TIP CARD ── */}
-      <div className="mx-2 p-5 rounded-[1.5rem] bg-emerald-500/5 border border-emerald-500/10 relative overflow-hidden group">
+      <div className="mx-2 p-5 rounded-md bg-emerald-500/5 border border-emerald-500/10 relative overflow-hidden group">
         <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-emerald-500/10 blur-3xl rounded-full transition-transform duration-700 group-hover:scale-150" />
         <p className="text-[11px] font-bold leading-relaxed text-emerald-500/80 italic">
           "Activar tu ubicación aumenta las posibilidades de intercambio en un 80%."
@@ -141,9 +132,9 @@ function TrendingItem({ card, index }: { card: typeof TRENDING_CARDS[0], index: 
         delay: index * 0.1
       }}
       whileHover={{ x: 4 }}
-      className="group flex items-center gap-4 p-3 rounded-2xl hover:bg-primary/20 border border-transparent hover:border-white/5 transition-all duration-300 cursor-pointer active:scale-[0.98]"
+      className="group flex items-center gap-4 p-2 rounded-lg hover:bg-primary/20 border border-transparent hover:border-white/5 transition-all duration-300 cursor-pointer active:scale-[0.98]"
     >
-      <div className="relative h-16 w-12 shrink-0 rounded-xl overflow-hidden shadow-2xl border border-white/10 group-hover:rotate-2 transition-transform duration-500">
+      <div className="relative h-16 w-12 shrink-0 rounded-md overflow-hidden shadow-2xl border border-white/10 group-hover:rotate-2 transition-transform duration-500">
         <Image
           src={card.image}
           alt={card.name}
@@ -157,7 +148,7 @@ function TrendingItem({ card, index }: { card: typeof TRENDING_CARDS[0], index: 
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-black tracking-tight truncate uppercase italic">{card.name}</p>
+          <p className="text-sm font-black tracking-tight truncate uppercase">{card.name}</p>
           <span className="text-[10px] font-black text-emerald-400 tabular-nums bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
             {card.change}
           </span>
