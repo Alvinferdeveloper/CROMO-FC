@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { LayoutWrapper } from "@/components/shared/layout-wrapper";
@@ -9,11 +8,7 @@ import { OnboardingWrapper } from "@/components/shared/onboarding-wrapper";
 import { siteConfig } from "@/lib/config";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react"
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
+import { satoshi } from "@/lib/fonts";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -81,7 +76,7 @@ export default function RootLayout({
       lang="es"
       className={cn(
         "h-full antialiased",
-        montserrat.className
+        satoshi.className
       )}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
