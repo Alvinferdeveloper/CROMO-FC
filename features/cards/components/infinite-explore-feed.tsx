@@ -7,6 +7,7 @@ import { CardItem } from './card-item'
 import { getExploreCards } from '../actions/explore-actions'
 import { Loader2 } from 'lucide-react'
 import { Card } from '@/types/card'
+import { useWishlist } from '@/features/wishlist/hooks/use-wishlist'
 
 interface InfiniteExploreFeedProps {
   initialCards: Card[]
@@ -22,7 +23,9 @@ export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, act
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(initialCards.length >= 12)
   const [isLoading, setIsLoading] = useState(false)
-  
+
+  const { isNeeded } = useWishlist()
+
   const { ref, inView } = useInView({
     threshold: 0,
     rootMargin: '200px'
@@ -77,13 +80,13 @@ export function InfiniteExploreFeed({ initialCards, searchParams, activeLat, act
               key={card.id}
               initial={{ opacity: 0, y: 12, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ 
-                duration: 0.28, 
+              transition={{
+                duration: 0.28,
                 delay: (index % 12) * 0.04,
                 ease: [0.23, 1, 0.32, 1]
               }}
             >
-              <CardItem card={card} />
+              <CardItem card={card} isNeeded={isNeeded(card.player_name)} />
             </motion.div>
           ))}
         </AnimatePresence>

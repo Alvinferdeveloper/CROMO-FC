@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, ArrowLeftRight, User, Star, Navigation } from 'lucide-react'
+import { MapPin, ArrowLeftRight, User, Star, Navigation, Sparkles } from 'lucide-react'
 import { Card } from '@/types/card'
+import { cn } from '@/lib/utils'
 
 interface CardItemProps {
   card: Card
+  isNeeded?: boolean
 }
 
 const RARITY_STYLES = {
@@ -34,7 +36,7 @@ const RARITY_STYLES = {
   }
 }
 
-export function CardItem({ card }: CardItemProps) {
+export function CardItem({ card, isNeeded }: CardItemProps) {
   const username = card.profiles?.full_name?.split(' ')[0] || 'Usuario'
   const location = card.location_city
     ? `${card.location_city}${card.country ? `, ${card.country}` : ''}`
@@ -45,11 +47,27 @@ export function CardItem({ card }: CardItemProps) {
   return (
     <Link href={`/cards/${card.id}`} className="block group h-full">
       <div
-        className={`relative h-full flex flex-col bg-card rounded-3xl transition-[transform,box-shadow,border-color] duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_20px_40px_-15px_rgba(var(--primary),0.15)] ring-1 ${style.border} overflow-hidden ${style.glow}`}
+        className={cn(
+          "relative h-full flex flex-col bg-card rounded-3xl transition-[transform,box-shadow,border-color] duration-300 group-hover:-translate-y-1 overflow-hidden",
+          style.border,
+          style.glow,
+          isNeeded 
+            ? "ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)]" 
+            : "ring-1",
+          !isNeeded && "group-hover:shadow-[0_20px_40px_-15px_rgba(var(--primary),0.15)]"
+        )}
         style={{ transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
       >
         {/* Image Container */}
         <div className="relative aspect-4/5 overflow-hidden bg-muted/30 shrink-0">
+          {isNeeded && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 animate-in fade-in zoom-in duration-500">
+              <div className="px-3 py-1 rounded-full bg-blue-600 text-white text-[9px] font-black uppercase tracking-[0.15em] flex items-center gap-1.5 shadow-2xl border border-blue-400/50 backdrop-blur-md">
+                <Sparkles className="w-3 h-3 fill-current" />
+                Lo necesitas
+              </div>
+            </div>
+          )}
           {card.image_url ? (
             <Image
               src={card.image_url}
